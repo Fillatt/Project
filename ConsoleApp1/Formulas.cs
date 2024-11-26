@@ -1,6 +1,6 @@
 ﻿using Serilog.Core;
-using static System.Math;
-namespace Stage1;
+
+namespace ConsoleApp1;
 
 /// <summary>
 /// Статический класс для вычисления по формулам
@@ -25,7 +25,7 @@ public static class Formulas
         Logger.Debug("Formulas.First: Start; Rank: {I}", i);
         for (int j = 0; j < k.GetLength(1); j++)
         {
-            k[i, j] = Math.Sin(Math.Sin(Math.Pow((randomValues[j] / (randomValues[j] + 1 / 2)), randomValues[j])));
+            k[i, j] = Math.Sin(Math.Sin(Math.Pow(randomValues[j] / (randomValues[j] + 1 / 2), randomValues[j])));
             Logger.Debug("Formulas.First: Iteration done; k[{I}][{J}]: {Value}", i, j, k[i, j]);
         }
         Logger.Debug("Formulas.First: Done; Rank: {I}", i);

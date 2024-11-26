@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Serilog;
 using Serilog.Core;
 using System.Text.Json;
 
-namespace Stage1;
+namespace ConsoleApp1;
 
 /// <summary>
 /// Статический класс для взаимодействия с конфигурационным файлом
@@ -21,12 +20,12 @@ public static class Configuration
     /// </summary>
     /// <param name="N"></param>
     /// <param name="L"></param>
-    public static void StartConfiguration(ref int N, ref int L)
+    public static void StartConfiguration(ref int N, ref int L, ref int sleep)
     {
         string filePath = "appsettings.json";
         Logger.Debug("Configuration.StartConfiguration: Start; File Path: {FilePath}", filePath);
         if (!File.Exists(filePath)) InitConfiguration(filePath);
-        ReadConfiguration(ref N, ref L, filePath);
+        ReadConfiguration(ref N, ref L, ref sleep, filePath);
         Logger.Debug("Configuration.StartConfiguration: Done; File Path: {FilePath}", filePath);
     }
 
@@ -36,22 +35,22 @@ public static class Configuration
     /// <param name="N"></param>
     /// <param name="L"></param>
     /// <param name="fileName"></param>
-    private static void ReadConfiguration(ref int N, ref int L, string filePath)
+    private static void ReadConfiguration(ref int N, ref int L, ref int sleep, string filePath)
     {
         Logger.Debug("Configuration.ReadConfiguration: Start; File Path: {FilePath}", filePath);
         var configuration = new ConfigurationBuilder().AddJsonFile(filePath).Build();
-        if (!string.IsNullOrEmpty(configuration["N"]) && !string.IsNullOrEmpty(configuration["L"]))
+        if (!string.IsNullOrEmpty(configuration["N"]) && !string.IsNullOrEmpty(configuration["L"]) && !string.IsNullOrEmpty(configuration["sleep"]))
         {
             N = Convert.ToInt32(configuration["N"]);
             Logger.Debug("Convert.ToInt32(string): Done; Value: {Value}", N);
             L = Convert.ToInt32(configuration["L"]);
             Logger.Debug("Convert.ToInt32(string): Done; Value: {Value}", L);
-            Logger.Debug("Configuration.ReadConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}", filePath, N, L);
+            sleep = Convert.ToInt32(configuration["sleep"]);
+            Logger.Debug("Convert.ToInt32(string): Done; Value: {Value}", sleep);
+            Logger.Debug("Configuration.ReadConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}; sleep: {Sleep}", filePath, N, L, sleep);
         }
         else
         {
-            N = 0;
-            L = 0;
             throw new Exception($"Configuration.ReadConfiguration: The necessary data is missing; File Path: {filePath}");
         }
     }
@@ -63,17 +62,13 @@ public static class Configuration
     private static void InitConfiguration(string filePath)
     {
         Logger.Debug("Configuration.InitConfiguration: Start; File Path: {FilePath}", filePath);
-        Variables values = new Variables() { N = 9, L = 11 };
+        Variables values = new Variables(9, 11, 10000);
         File.WriteAllText(filePath, JsonSerializer.Serialize(values));
-        Logger.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}", filePath, values.N, values.L);
+        Logger.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}; sleep: {Sleep}", filePath, values.N, values.L, values.Sleep);
     }
 
     /// <summary>
-    /// Класс, представляющий объект, содержащий небходимые перменные, для сериализации в конфигурационный файл
+    /// Запись, представляющая объект, содержащий небходимые перменные для сериализации в конфигурационный файл
     /// </summary>
-    private class Variables
-    {
-        public int N { get; set; }
-        public int L { get; set; }
-    }
+    private record Variables(int N, int L, int Sleep);
 }
