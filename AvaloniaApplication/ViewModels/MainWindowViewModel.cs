@@ -13,17 +13,25 @@ public class MainWindowViewModel : ViewModelBase
 
     private string _message;
 
+    private ReactiveCommand<Unit, Unit> _getStartCommand;
+
     private AvaloniaList<IFigure> _figures = [];
 
     private AvaloniaList<DoubleValue> _amounts = [];
 
-    public MainWindowViewModel()
+    public ReactiveCommand<Unit, Unit> GetStartCommand
     {
-        _model = new();
-        GetStartCommand = ReactiveCommand.CreateRunInBackground(StartCommandAsync);
+        get => _getStartCommand;
+        set { this.RaiseAndSetIfChanged(ref _getStartCommand, value); }
     }
 
-    public ReactiveCommand<Unit, Task> GetStartCommand { get; }
+    public ReactiveCommand<Unit, Unit> GetRegisterCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> GetLoginCommand { get; }
+
+    public string Login { get; set; }
+
+    public string Password { get; set; }
 
     public string Message
     {
@@ -35,6 +43,13 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _amounts;
         set { this.RaiseAndSetIfChanged(ref _amounts, value); }
+    }
+
+    public MainWindowViewModel()
+    {
+        _model = new();
+        GetLoginCommand = ReactiveCommand.CreateFromTask(LoginCommandAsync);
+        GetRegisterCommand = ReactiveCommand.CreateFromTask(RegisterCommandAsync);
     }
 
     private async Task StartCommandAsync()
@@ -52,13 +67,25 @@ public class MainWindowViewModel : ViewModelBase
     private void FiguresInit() => _figures = _model.FiguresInit();
 
     private async Task DoTasksAsync()
-    {   
+    {
         Message = string.Empty;
-        foreach(var figure in _figures)
-        {          
+        foreach (var figure in _figures)
+        {
             figure.DoTheTask();
             Message += figure.Message;
             await Task.Delay(_model.Sleep);
         }
+    }
+
+    private void SetStartCommand() => GetStartCommand = ReactiveCommand.CreateFromTask(StartCommandAsync);
+
+    private async Task RegisterCommandAsync()
+    {
+        SetStartCommand();
+    }
+
+    private async Task LoginCommandAsync()
+    {
+        SetStartCommand();
     }
 }

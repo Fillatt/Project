@@ -1,5 +1,4 @@
 ﻿using Avalonia.Collections;
-using AvaloniaApplication.ViewModels;
 using ConsoleApp1;
 using Figure;
 using Serilog;
