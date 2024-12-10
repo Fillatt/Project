@@ -1,4 +1,6 @@
-﻿namespace Figure;
+﻿using System.Text;
+
+namespace Figure;
 
 public class Rectangle : AbstractFigure
 {
@@ -15,8 +17,10 @@ public class Rectangle : AbstractFigure
     public override void DoTheTask()
     {
         Logger.Debug("Rectangle.DoTheTask: Start");
-        StartTheTaskInfo();
-        CompleteTheTaskInfo();
+        StringBuilder sb = new();
+        sb.AppendLine(StartTheTaskInfo);
+        sb.AppendLine(CompleteTheTaskInfo);
         Logger.Debug("Rectangle.DoTheTask: Done");
+        Message = sb.ToString();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Figure;
+﻿using System.Text;
+
+namespace Figure;
 
 public class Triangle : AbstractFigure
 {
@@ -15,8 +17,10 @@ public class Triangle : AbstractFigure
     public override void DoTheTask()
     {
         Logger.Debug("Triangle.DoTheTask: Start");
-        StartTheTaskInfo();
-        CompleteTheTaskInfo();
+        StringBuilder sb = new();
+        sb.AppendLine(StartTheTaskInfo);
+        sb.AppendLine(CompleteTheTaskInfo);
         Logger.Debug("Triangle.DoTheTask: Done");
+        Message = sb.ToString();
     }
 }

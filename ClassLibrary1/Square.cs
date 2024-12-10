@@ -1,4 +1,6 @@
-﻿namespace Figure;
+﻿using System.Text;
+
+namespace Figure;
 
 public class Square : AbstractFigure
 {
@@ -15,8 +17,10 @@ public class Square : AbstractFigure
     public override void DoTheTask()
     {
         Logger.Debug("Square.DoTheTask: Start");
-        StartTheTaskInfo();
-        CompleteTheTaskInfo();
+        StringBuilder sb = new();
+        sb.AppendLine(StartTheTaskInfo);
+        sb.AppendLine(CompleteTheTaskInfo);
         Logger.Debug("Square.DoTheTask: Done");
+        Message = sb.ToString();
     }
 }

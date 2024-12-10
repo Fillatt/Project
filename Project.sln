@@ -5,7 +5,9 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{1C9CACBA-155B-460F-AF5D-D2706A18E0CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Figure", "ClassLibrary1\Figure.csproj", "{9683FC99-990A-4966-ADCD-524082CDCA59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Figure", "ClassLibrary1\Figure.csproj", "{9683FC99-990A-4966-ADCD-524082CDCA59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication", "AvaloniaApplication\AvaloniaApplication.csproj", "{EB59F2EA-E424-4B4C-9977-119AF7F74313}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9683FC99-990A-4966-ADCD-524082CDCA59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9683FC99-990A-4966-ADCD-524082CDCA59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9683FC99-990A-4966-ADCD-524082CDCA59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB59F2EA-E424-4B4C-9977-119AF7F74313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB59F2EA-E424-4B4C-9977-119AF7F74313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB59F2EA-E424-4B4C-9977-119AF7F74313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB59F2EA-E424-4B4C-9977-119AF7F74313}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

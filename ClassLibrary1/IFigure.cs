@@ -15,6 +15,8 @@ public interface IFigure
     /// </summary>
     string Task { get; }
 
+    string Message { get; set; }
+
     /// <summary>
     /// Метод, выполняющий поставленную фигуре задачу
     /// </summary>

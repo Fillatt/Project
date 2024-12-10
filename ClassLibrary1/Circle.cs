@@ -1,4 +1,6 @@
-﻿namespace Figure;
+﻿using System.Text;
+
+namespace Figure;
 
 /// <summary>
 /// Класс, представляющий круг
@@ -21,11 +23,13 @@ public class Circle : AbstractFigure
     public override void DoTheTask()
     {
         Logger.Debug("Circle.DoTheTask: Start");
-        StartTheTaskInfo();
+        StringBuilder sb = new();
+        sb.AppendLine(StartTheTaskInfo);
         StartClearTheWay();
         StopClearTheWay();
-        CompleteTheTaskInfo();
+        sb.AppendLine(CompleteTheTaskInfo);
         Logger.Debug("Circle.DoTheTask: Done");
+        Message = sb.ToString();
     }
 
     /// <summary>

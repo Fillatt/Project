@@ -7,6 +7,8 @@ namespace Figure;
 /// </summary>
 public abstract class AbstractFigure : IFigure, IMoving
 {
+    private string _message;
+
     /// <summary>
     /// Конструктор
     /// </summary>
@@ -24,15 +26,17 @@ public abstract class AbstractFigure : IFigure, IMoving
 
     public abstract string Task { get; }
 
+    public string Message { get; set; }
+
     public abstract void DoTheTask();
 
     /// <summary>
     /// Метод, выводящий на консоль информацию о начале выполнения задачи
     /// </summary>
-    protected void StartTheTaskInfo() => Console.WriteLine($"{Task}: The {Type} has started the task");
+    protected string StartTheTaskInfo => $"{Task}: The {Type} has started the task";
 
     /// <summary>
     /// Метод, выводящий на консоль информацию о завершении выполнения задачи
     /// </summary>
-    protected void CompleteTheTaskInfo() => Console.WriteLine($"{Task}: The {Type} has completed the task");
+    protected string CompleteTheTaskInfo => $"{Task}: The {Type} has completed the task";
 }

@@ -12,7 +12,7 @@ public static class Extensions
     /// </summary>
     public static Logger Logger { get; set; }
 
-    public static Logger LoggerError {  get; set; }
+    public static Logger LoggerError { get; set; }
 
     /// <summary>
     /// Расширяющий метод для Random; генерирует случайные double-числа в указанном диапазоне
@@ -119,7 +119,7 @@ public static class Extensions
                         continue;
                 }
             }
-            catch(DivideByZeroException ex)
+            catch (DivideByZeroException ex)
             {
                 LoggerError.Error("{TargetSite}: {Message}; StackTrace: {StackTrace}", ex.TargetSite, ex.Message, ex.StackTrace);
             }

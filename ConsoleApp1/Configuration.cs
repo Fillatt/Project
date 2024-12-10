@@ -62,7 +62,7 @@ public static class Configuration
     private static void InitConfiguration(string filePath)
     {
         Logger.Debug("Configuration.InitConfiguration: Start; File Path: {FilePath}", filePath);
-        Variables values = new Variables(9, 11, 10000);
+        Variables values = new Variables(9, 11, 3000);
         File.WriteAllText(filePath, JsonSerializer.Serialize(values));
         Logger.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}; sleep: {Sleep}", filePath, values.N, values.L, values.Sleep);
     }
