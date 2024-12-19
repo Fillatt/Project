@@ -30,4 +30,10 @@
     <ProjectReference Include="..\ClassLibrary1\Figure.csproj" />
     <ProjectReference Include="..\ConsoleApp1\ConsoleApp1.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\AuthenticationWindow.axaml.cs">
+      <DependentUpon>AuthenticationWindow.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:AvaloniaApplication.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication.Views.AuthenticationWindow"
+		x:DataType="vm:AuthenticationWindowViewModel"
+		WindowStartupLocation="CenterScreen"
+        Title="AuthenticationWindow">
+	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBox Watermark="Login" Text="{Binding Login}" Margin="0 10"/>
+		<TextBox Watermark="Password" PasswordChar="*" Text="{Binding Password}"/>
+		<StackPanel Orientation="Horizontal" Margin="20">
+		<Button Command="{Binding StartLoginCommand}" Content="Login"/>
+		<Button Command="{Binding StartRegisterCommand}" Content="New Account"/>
+		</StackPanel>
+	</StackPanel>
+</Window>

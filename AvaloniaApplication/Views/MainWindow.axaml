@@ -6,10 +6,11 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+		WindowStartupLocation="CenterScreen"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaApplication">
 	    <DockPanel Margin="20">
-			<StackPanel Width="1000">
+			<StackPanel>
 			<ItemsControl ItemsSource="{Binding Amounts}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
@@ -21,14 +22,9 @@
 			</ItemsControl>
 			<TextBlock Text="{Binding Message}"/>
 			</StackPanel>
-			<StackPanel Orientation="Vertical">
-				<TextBox Margin="0,0,0,10" Width="150" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Watermark="Логин" Text="{Binding Login}"/>
-				<TextBox Margin="0,0,0,10" Width="150" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Watermark="Пароль" PasswordChar="*" Text="{Binding Password}"/>
-				<StackPanel>
-					<Button Margin="0,0,0,10" Width="110" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Content="Регистрация" Command="{Binding GetRegisterCommand}"/>
-					<Button Width="70" VerticalAlignment="Top" HorizontalAlignment="Right" Height="30" Content="Войти" Command="{Binding GetLoginCommand}"/>
-				</StackPanel>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<Button FontSize="20" Command="{Binding StartCommand}" Content="Start"/>
+				<Button FontSize="20" Command="{Binding StopCommand}" Content="Stop"/>
 			</StackPanel>
-			<Button FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="40" Width="80" Command="{Binding GetStartCommand}">Старт</Button>
-		</DockPanel>
+			</DockPanel>
 </Window>

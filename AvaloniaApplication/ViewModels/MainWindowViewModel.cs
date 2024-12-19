@@ -2,33 +2,37 @@
 using AvaloniaApplication.Models;
 using Figure;
 using ReactiveUI;
+using System;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AvaloniaApplication.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    #region Private Fields
     private Model _model;
 
     private string _message;
-
-    private ReactiveCommand<Unit, Unit> _getStartCommand;
 
     private AvaloniaList<IFigure> _figures = [];
 
     private AvaloniaList<DoubleValue> _amounts = [];
 
-    public ReactiveCommand<Unit, Unit> GetStartCommand
+    private CancellationToken _tokenStart;
+
+    private CancellationTokenSource _ctsStart;
+    #endregion
+
+    public MainWindowViewModel()
     {
-        get => _getStartCommand;
-        set { this.RaiseAndSetIfChanged(ref _getStartCommand, value); }
+        _model = new();
+        StartCommand = ReactiveCommand.CreateFromTask(StartAsync);
+        StopCommand = ReactiveCommand.Create(Stop);
     }
 
-    public ReactiveCommand<Unit, Unit> GetRegisterCommand { get; }
-
-    public ReactiveCommand<Unit, Unit> GetLoginCommand { get; }
-
+    #region Properties
     public string Login { get; set; }
 
     public string Password { get; set; }
@@ -44,22 +48,33 @@ public class MainWindowViewModel : ViewModelBase
         get => _amounts;
         set { this.RaiseAndSetIfChanged(ref _amounts, value); }
     }
+    #endregion
 
-    public MainWindowViewModel()
+    #region Commands
+    public ReactiveCommand<Unit, Unit> StartCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> StopCommand { get; }
+    #endregion
+
+    #region Private Methods
+    private async Task StartAsync()
     {
-        _model = new();
-        GetLoginCommand = ReactiveCommand.CreateFromTask(LoginCommandAsync);
-        GetRegisterCommand = ReactiveCommand.CreateFromTask(RegisterCommandAsync);
+        _ctsStart = new CancellationTokenSource();
+        _tokenStart = _ctsStart.Token;
+        while (!_tokenStart.IsCancellationRequested)
+        {             
+            GetAmounts();            
+            FiguresInit();            
+            await DoTasksAsync();           
+        }
     }
 
-    private async Task StartCommandAsync()
+    private void Stop()
     {
-        while (true)
-        {
-            GetAmounts();
-            FiguresInit();
-            await DoTasksAsync();
-        }
+        _ctsStart.Cancel();
+        _ctsStart.Dispose();
+        Message = string.Empty;
+        Amounts.Clear();
     }
 
     private void GetAmounts() => Amounts = _model.GetAmounts();
@@ -70,22 +85,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         Message = string.Empty;
         foreach (var figure in _figures)
-        {
+        {            
             figure.DoTheTask();
             Message += figure.Message;
-            await Task.Delay(_model.Sleep);
+            try { await Task.Delay(_model.Sleep, _tokenStart); }
+            catch (OperationCanceledException) { return; }
         }
     }
-
-    private void SetStartCommand() => GetStartCommand = ReactiveCommand.CreateFromTask(StartCommandAsync);
-
-    private async Task RegisterCommandAsync()
-    {
-        SetStartCommand();
-    }
-
-    private async Task LoginCommandAsync()
-    {
-        SetStartCommand();
-    }
+    #endregion
 }
