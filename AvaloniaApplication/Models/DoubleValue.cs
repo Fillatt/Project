@@ -1,3 +1,3 @@
 ﻿namespace AvaloniaApplication.Models;
 
-public record DoubleValue(double? Value);
+public record DoubleValue(double Value);

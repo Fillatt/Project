@@ -13,12 +13,17 @@ public interface IFigure
     /// <summary>
     /// Задача фигуры
     /// </summary>
-    string Task { get; }
+    string Mission { get; }
 
     string Message { get; set; }
 
     /// <summary>
-    /// Метод, выполняющий поставленную фигуре задачу
+    /// Метод, начинающий выполнять поставленную фигуре задачу
     /// </summary>
-    void DoTheTask();
+    void StartTheMission();
+
+    /// <summary>
+    /// Метод, завершающий выполнение поставленной задачи
+    /// </summary>
+    void StopTheMission();
 }

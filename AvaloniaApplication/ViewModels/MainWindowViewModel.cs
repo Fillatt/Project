@@ -1,96 +1,55 @@
-﻿using Avalonia.Collections;
-using AvaloniaApplication.Models;
-using Figure;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Reactive;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AvaloniaApplication.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ReactiveObject, IScreen
 {
-    #region Private Fields
-    private Model _model;
+    #region Properties
+    /// <summary>
+    /// Маршрутизатор
+    /// </summary>
+    public RoutingState Router { get; } = new RoutingState();
 
-    private string _message;
+    /// <summary>
+    /// Навигация к окну аутентификации
+    /// </summary>
+    public ReactiveCommand<Unit, IRoutableViewModel> AuthenticationCommand { get; }
 
-    private AvaloniaList<IFigure> _figures = [];
-
-    private AvaloniaList<DoubleValue> _amounts = [];
-
-    private CancellationToken _tokenStart;
-
-    private CancellationTokenSource _ctsStart;
+    /// <summary>
+    /// Навигация к окну основной программы
+    /// </summary>
+    public ReactiveCommand<Unit, IRoutableViewModel> MainCommand { get; }
     #endregion
 
+    #region Constructors
     public MainWindowViewModel()
     {
-        _model = new();
-        StartCommand = ReactiveCommand.CreateFromTask(StartAsync);
-        StopCommand = ReactiveCommand.Create(Stop);
+        AuthenticationCommand = ReactiveCommand.CreateFromObservable(NavigateAuthentication);
+        MainCommand = ReactiveCommand.CreateFromObservable(NavigateMain, LoginViewModel.IsAuthenticated);
+        LoginViewModel.RegisterSelected += (sender, args) => NavigateRegister();
+        AuthenticationCommand.Execute();
     }
-
-    #region Properties
-    public string Login { get; set; }
-
-    public string Password { get; set; }
-
-    public string Message
-    {
-        get => _message;
-        set { this.RaiseAndSetIfChanged(ref _message, value); }
-    }
-
-    public AvaloniaList<DoubleValue> Amounts
-    {
-        get => _amounts;
-        set { this.RaiseAndSetIfChanged(ref _amounts, value); }
-    }
-    #endregion
-
-    #region Commands
-    public ReactiveCommand<Unit, Unit> StartCommand { get; }
-
-    public ReactiveCommand<Unit, Unit> StopCommand { get; }
     #endregion
 
     #region Private Methods
-    private async Task StartAsync()
-    {
-        _ctsStart = new CancellationTokenSource();
-        _tokenStart = _ctsStart.Token;
-        while (!_tokenStart.IsCancellationRequested)
-        {             
-            GetAmounts();            
-            FiguresInit();            
-            await DoTasksAsync();           
-        }
-    }
+    /// <summary>
+    /// Навигация к окну аутентификации
+    /// </summary>
+    /// <returns></returns>
+    private IObservable<IRoutableViewModel> NavigateAuthentication() => Router.Navigate.Execute(new LoginViewModel(this));
 
-    private void Stop()
-    {
-        _ctsStart.Cancel();
-        _ctsStart.Dispose();
-        Message = string.Empty;
-        Amounts.Clear();
-    }
+    /// <summary>
+    /// Навгация к окну основной программы
+    /// </summary>
+    /// <returns></returns>
+    private IObservable<IRoutableViewModel> NavigateMain() => Router.Navigate.Execute(new MainViewModel(this));
 
-    private void GetAmounts() => Amounts = _model.GetAmounts();
-
-    private void FiguresInit() => _figures = _model.FiguresInit();
-
-    private async Task DoTasksAsync()
-    {
-        Message = string.Empty;
-        foreach (var figure in _figures)
-        {            
-            figure.DoTheTask();
-            Message += figure.Message;
-            try { await Task.Delay(_model.Sleep, _tokenStart); }
-            catch (OperationCanceledException) { return; }
-        }
-    }
+    /// <summary>
+    /// Навигация к окну регистрации
+    /// </summary>
+    /// <returns></returns>
+    private IObservable<IRoutableViewModel> NavigateRegister() => Router.Navigate.Execute(new RegisterViewModel(this));
     #endregion
 }

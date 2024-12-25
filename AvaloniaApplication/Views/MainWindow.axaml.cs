@@ -1,16 +1,13 @@
-using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using AvaloniaApplication.ViewModels;
-using ReactiveUI;
-using System.Reactive;
-using System.Threading.Tasks;
 namespace AvaloniaApplication.Views
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         public MainWindow()
         {
-            InitializeComponent();           
-        }      
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

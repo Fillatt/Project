@@ -1,19 +1,14 @@
-﻿using Serilog.Core;
+﻿using Serilog;
+using Serilog.Core;
 
-namespace ConsoleApp1;
+namespace ConsoleApp;
 
 /// <summary>
 /// Статический класс для расширяющих методов
 /// </summary>
 public static class Extensions
 {
-    /// <summary>
-    /// Статическое свойство для взаимодействия с логгером
-    /// </summary>
-    public static Logger Logger { get; set; }
-
-    public static Logger LoggerError { get; set; }
-
+    #region Public Methods
     /// <summary>
     /// Расширяющий метод для Random; генерирует случайные double-числа в указанном диапазоне
     /// </summary>
@@ -23,9 +18,9 @@ public static class Extensions
     /// <returns></returns>
     public static double NextDouble(this Random random, double minValue, double maxValue)
     {
-        Logger.Debug("Extensions.NextDouble: Start; MinValue: {MinValue}; MaxValue: {MaxValue}", minValue, maxValue);
+        Log.Debug("Extensions.NextDouble: Start; MinValue: {MinValue}; MaxValue: {MaxValue}", minValue, maxValue);
         double result = random.NextDouble() * (maxValue - minValue) + minValue;
-        Logger.Debug("Extensions.NextDouble: Done; Value: {Value}", result);
+        Log.Debug("Extensions.NextDouble: Done; Value: {Value}", result);
         return result;
     }
 
@@ -38,7 +33,7 @@ public static class Extensions
     /// <returns></returns>
     public static double? MinValueInRow(this double?[,] arr, int row)
     {
-        Logger.Debug("Extensions.MinInRow: Start; Row: {Row}", row);
+        Log.Debug("Extensions.MinInRow: Start; Row: {Row}", row);
         double? min = arr[row, 0];
         for (int j = 0; j < arr.GetLength(1); j++)
         {
@@ -47,7 +42,7 @@ public static class Extensions
                 if (arr[row, j] < min) min = arr[row, j];
             }
         }
-        Logger.Debug("Extensions.MinInRow: Done; Value: {Value}", min);
+        Log.Debug("Extensions.MinInRow: Done; Value: {Value}", min);
         return min;
     }
 
@@ -60,7 +55,7 @@ public static class Extensions
     /// <returns></returns>
     public static double? AverageValueInColumn(this double?[,] arr, int column)
     {
-        Logger.Debug("Extensions.AverageValueInColumn: Start; Column: {Column}", column);
+        Log.Debug("Extensions.AverageValueInColumn: Start; Column: {Column}", column);
         int number = 0;
         double? sum = 0;
         for (int i = 0; i < arr.GetLength(0); i++)
@@ -72,9 +67,9 @@ public static class Extensions
             }
         }
         double? numberDouble = (double?)number;
-        Logger.Debug("(double?)int: Done; Value: {Value}", numberDouble);
+        Log.Debug("(double?)int: Done; Value: {Value}", numberDouble);
         double? result = sum / numberDouble;
-        Logger.Debug("Extensions.AverageValueInColumn: Done; Value: {Value}", result);
+        Log.Debug("Extensions.AverageValueInColumn: Done; Value: {Value}", result);
         return result;
     }
 
@@ -87,9 +82,9 @@ public static class Extensions
     /// <param name="maxValue"></param>
     public static void Init(this double[] arr, double minValue, double maxValue)
     {
-        Logger.Debug("Extensions.Init: Start; MinValue: {MinValue}; MaxValue: {MaxValue}", minValue, maxValue);
+        Log.Debug("Extensions.Init: Start; MinValue: {MinValue}; MaxValue: {MaxValue}", minValue, maxValue);
         for (int i = 0; i < arr.Length; i++) arr[i] = new Random().NextDouble(minValue, maxValue);
-        Logger.Debug("Extensions.Init: Done");
+        Log.Debug("Extensions.Init: Done");
     }
 
     /// <summary>
@@ -101,7 +96,7 @@ public static class Extensions
     /// <param name="oddNumbers"></param>
     public static void Init(this double?[,] arr, double[] randomValues, int[] oddNumbers)
     {
-        Logger.Debug("Extensions.Init: Start");
+        Log.Debug("Extensions.Init: Start");
         for (int i = 0; i < arr.GetLength(0); i++)
         {
             try
@@ -121,9 +116,10 @@ public static class Extensions
             }
             catch (DivideByZeroException ex)
             {
-                LoggerError.Error("{TargetSite}: {Message}; StackTrace: {StackTrace}", ex.TargetSite, ex.Message, ex.StackTrace);
+                Log.Error("{TargetSite}: {Message}; StackTrace: {StackTrace}", ex.TargetSite, ex.Message, ex.StackTrace);
             }
         }
-        Logger.Debug("Extensions.Init: Done");
+        Log.Debug("Extensions.Init: Done");
     }
+    #endregion
 }

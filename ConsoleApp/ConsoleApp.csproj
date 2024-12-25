@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Figure.csproj" />
+    <ProjectReference Include="..\Figure\Figure.csproj" />
   </ItemGroup>
 
 </Project>

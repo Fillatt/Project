@@ -15,28 +15,25 @@ public abstract class AbstractFigure : IFigure, IMoving
     /// <param name="speed"></param>
     public AbstractFigure(double speed) => Speed = speed;
 
-    /// <summary>
-    /// Логгер
-    /// </summary>
-    public static Logger Logger { get; set; }
-
     public double Speed { get; set; }
 
     public abstract string Type { get; }
 
-    public abstract string Task { get; }
+    public abstract string Mission { get; }
 
     public string Message { get; set; }
 
-    public abstract void DoTheTask();
+    public abstract void StartTheMission();
+
+    public abstract void StopTheMission();
 
     /// <summary>
     /// Метод, выводящий на консоль информацию о начале выполнения задачи
     /// </summary>
-    protected string StartTheTaskInfo => $"{Task}: The {Type} has started the task";
+    public string StartTheMissionInfo => $"{Mission}: The {Type} has started the mission";
 
     /// <summary>
     /// Метод, выводящий на консоль информацию о завершении выполнения задачи
     /// </summary>
-    protected string CompleteTheTaskInfo => $"{Task}: The {Type} has completed the task";
+    public string CompleteTheMissionInfo => $"{Mission}: The {Type} has completed the mission";
 }

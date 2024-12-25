@@ -1,30 +1,25 @@
 <Window xmlns="https://github.com/avaloniaui"
+		xmlns:rxui="http://reactiveui.net"
+		xmlns:app="clr-namespace:AvaloniaApplication"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApplication.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+		x:DataType="vm:MainWindowViewModel"
 		WindowStartupLocation="CenterScreen"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaApplication">
-	    <DockPanel Margin="20">
-			<StackPanel>
-			<ItemsControl ItemsSource="{Binding Amounts}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel>
-							<TextBlock Text="{Binding Value}"/>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-			<TextBlock Text="{Binding Message}"/>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<Button FontSize="20" Command="{Binding StartCommand}" Content="Start"/>
-				<Button FontSize="20" Command="{Binding StopCommand}" Content="Stop"/>
-			</StackPanel>
-			</DockPanel>
+	<StackPanel Orientation="Vertical">		
+		<StackPanel Orientation="Horizontal">
+			<Button Content="Authentication" Command="{Binding AuthenticationCommand}"/>
+			<Button Content="Main" Command="{Binding MainCommand}"/>
+		</StackPanel>
+		<rxui:RoutedViewHost Router="{Binding Router}" Height="525">
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>	
+		</rxui:RoutedViewHost>
+	</StackPanel>
 </Window>

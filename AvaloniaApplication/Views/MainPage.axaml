@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="using:AvaloniaApplication.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaApplication.Views.MainPage"
+			 x:DataType="vm:MainViewModel">
+	<DockPanel Margin="20">
+		<StackPanel>
+			<ItemsControl ItemsSource="{Binding Amounts}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<TextBlock Text="{Binding Value}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+			<TextBlock Text="{Binding Message}"/>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+			<Button FontSize="20" Command="{Binding StartCommand}" Content="Start"/>
+			<Button FontSize="20" Command="{Binding StopCommand}" Content="Stop"/>
+		</StackPanel>
+	</DockPanel>
+</UserControl>

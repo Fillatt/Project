@@ -1,78 +1,67 @@
 ﻿using Avalonia.Collections;
-using ConsoleApp1;
+using ConsoleApp;
 using Figure;
 using Serilog;
-using Serilog.Core;
+using System;
 using System.Collections.Generic;
 
 namespace AvaloniaApplication.Models;
 
+/// <summary>
+/// Класс модели предметной области
+/// </summary>
 public class Model
 {
-    private int _N = 0;
-    private int _L = 0;
-    private int _sleep = 0;
+    #region Private Fields
+    private int _N;
+    private int _L;
+    private int _sleep;
     private int[] _oddNumbers = new int[8];
-    private List<double?> _amounts = [];
+    private List<double> _amounts = [];
+    #endregion
 
-    /// <summary>
-    /// Логгер для уровня Information
-    /// </summary>
-    private Logger _infoLog = new LoggerConfiguration()
-        .MinimumLevel.Information()
-        .WriteTo.File("InformationLog.json")
-        .CreateLogger();
-
-    /// <summary>
-    /// Логгер для уровня Debug
-    /// </summary>
-    private Logger _debugLog = new LoggerConfiguration()
-        .MinimumLevel.Debug()
-        .WriteTo.File("DebugLog.json")
-        .CreateLogger();
-
-    /// <summary>
-    /// Логгер для уровня Error
-    /// </summary>
-    private Logger _errorLog = new LoggerConfiguration()
-        .MinimumLevel.Error()
-        .WriteTo.File("ErrorLog.json")
-        .CreateLogger();
-
+    #region Properties
     public int Sleep { get => _sleep; }
+    #endregion
 
+    #region Constructors
     public Model()
     {
-        SettingUpLoggers();
-        Calculations.StartConfiguration(ref _N, ref _L, ref _sleep);
+        _N = Convert.ToInt32(Configuration.ReadFromConfiguration("N"));
+        _L = Convert.ToInt32(Configuration.ReadFromConfiguration("L"));
+        _sleep = Convert.ToInt32(Configuration.ReadFromConfiguration("Sleep"));
         _oddNumbers = Calculations.OddNumbersInit();
     }
+    #endregion
 
+    #region Public Methods
+    /// <summary>
+    /// Вычисление сумм
+    /// </summary>
+    /// <returns></returns>
     public AvaloniaList<DoubleValue> GetAmounts()
     {
+        Log.Debug("Model.GetAmounts: Start");
         AvaloniaList<DoubleValue> amountsAvalonia = [];
         _amounts = Calculations.CountAmounts(_oddNumbers, _N, _L);
         foreach (double value in _amounts) amountsAvalonia.Add(new DoubleValue(value));
+        Log.Debug("Model.GetAmounts: Done");
         return amountsAvalonia;
     }
 
+    /// <summary>
+    /// Инициализация фигур
+    /// </summary>
+    /// <returns></returns>
     public AvaloniaList<IFigure> FiguresInit()
     {
+        Log.Debug("Model.FiguresInit: Start");
         List<double> speeds = Calculations.SpeedsInit(_amounts);
         List<IFigure> figures = Calculations.FiguresInit(speeds);
         AvaloniaList<IFigure> figuresAvalonia = [];
         foreach (var figure in figures) figuresAvalonia.Add(figure);
+        Log.Debug("Model.FiguresInit: Done");
         return figuresAvalonia;
     }
-
-    private void SettingUpLoggers()
-    {
-        Configuration.Logger = _debugLog;
-        Formulas.Logger = _debugLog;
-        Extensions.Logger = _debugLog;
-        Extensions.LoggerError = _errorLog;
-        AbstractFigure.Logger = _debugLog;
-        Calculations.InfoLog = _infoLog;
-        Calculations.ErrorLog = _errorLog;
-    }
+    #endregion
 }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Serilog;
+using System.Text;
 
 namespace Figure;
 
@@ -18,18 +19,26 @@ public class Circle : AbstractFigure
 
     public override string Type => "Circle";
 
-    public override string Task => "Clear the way of obstacles";
+    public override string Mission => "Clear the way of obstacles";
 
-    public override void DoTheTask()
+    public override void StartTheMission()
     {
-        Logger.Debug("Circle.DoTheTask: Start");
+        Log.Debug("Circle.StartTheMission: Start");
         StringBuilder sb = new();
-        sb.AppendLine(StartTheTaskInfo);
-        StartClearTheWay();
-        StopClearTheWay();
-        sb.AppendLine(CompleteTheTaskInfo);
-        Logger.Debug("Circle.DoTheTask: Done");
+        sb.AppendLine(StartTheMissionInfo);
         Message = sb.ToString();
+        StartClearTheWay();
+        Log.Debug("Circle.StartTheMission: Done");
+    }
+
+    public override void StopTheMission() 
+    {
+        Log.Debug("Circle.StopTheMission: Start");
+        StopClearTheWay();
+        StringBuilder sb = new();
+        sb.AppendLine(CompleteTheMissionInfo);
+        Message = sb.ToString();
+        Log.Debug("Circle.StopTheMission: Done");
     }
 
     /// <summary>
@@ -42,20 +51,19 @@ public class Circle : AbstractFigure
     /// </summary>
     private void StartClearTheWay()
     {
-        Logger.Debug("Circle.StartClearTheWay: Start; Color: {Color}; Speed: {Speed}", Color, Speed);
+        Log.Debug("Circle.StartClearTheWay: Start; Color: {Color}; Speed: {Speed}", Color, Speed);
         Color = Color.Dark;
         Speed /= 2;
-        Logger.Debug("Circle.StartClearTheWay: Done; Color: {Color}; Speed: {Speed}", Color, Speed);
+        Log.Debug("Circle.StartClearTheWay: Done; Color: {Color}; Speed: {Speed}", Color, Speed);
     }
-
     /// <summary>
     /// Метод, завершающий очистку пути
     /// </summary>
     private void StopClearTheWay()
     {
-        Logger.Debug("Circle.StopClearTheWay: Start; Color: {Color}; Speed: {Speed}", Color, Speed);
+        Log.Debug("Circle.StopClearTheWay: Start; Color: {Color}; Speed: {Speed}", Color, Speed);
         Color = Color.Bright;
         Speed *= 2;
-        Logger.Debug("Circle.StopClearTheWay: Done; Color: {Color}; Speed: {Speed}", Color, Speed);
+        Log.Debug("Circle.StopClearTheWay: Done; Color: {Color}; Speed: {Speed}", Color, Speed);
     }
 }
