@@ -4,6 +4,8 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using AvaloniaApplication.ViewModels;
 using AvaloniaApplication.Views;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System.Linq;
 
 namespace AvaloniaApplication
@@ -19,8 +21,8 @@ namespace AvaloniaApplication
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-                // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+                Log.Logger = Services.ServiceProvider.GetRequiredService<ILogger>();
+
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {

@@ -3,9 +3,11 @@ using Figure;
 using Serilog;
 using Serilog.Events;
 
-int N = Convert.ToInt32(Configuration.ReadFromConfiguration("N"));
-int L = Convert.ToInt32(Configuration.ReadFromConfiguration("L"));
-int sleep = Convert.ToInt32(Configuration.ReadFromConfiguration("Sleep"));
+Configuration configuration = new("appsettings.json");
+
+int N = configuration.GetN();
+int L = configuration.GetL();
+int sleep = configuration.GetSleep();
 
 int[] oddNumbers = new int[8];
 

@@ -9,10 +9,6 @@ public abstract class AbstractFigure : IFigure, IMoving
 {
     private string _message;
 
-    /// <summary>
-    /// Конструктор
-    /// </summary>
-    /// <param name="speed"></param>
     public AbstractFigure(double speed) => Speed = speed;
 
     public double Speed { get; set; }

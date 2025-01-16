@@ -10,11 +10,8 @@ public class Context : DbContext
 {
     public DbSet<AccountDB> Accounts => Set<AccountDB>();
 
-    public Context() => Database.EnsureCreated();
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public Context(DbContextOptions<Context> options) : base(options)
     {
-        string connectionString = ConsoleApp.Configuration.ReadFromConfiguration("ConnectionString");
-        optionsBuilder.UseSqlServer(connectionString);
-    }
+        Database.EnsureCreated();        
+    }    
 }

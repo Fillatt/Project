@@ -6,24 +6,41 @@ using System.Text.Json;
 namespace ConsoleApp;
 
 /// <summary>
-/// Статический класс для взаимодействия с конфигурационным файлом
+/// Класс для взаимодействия с конфигурационным файлом
 /// </summary>
-public static class Configuration
+public class Configuration
 {
-    #region Static Properties
+    #region Properties
     /// <summary>
     /// Путь конфигурационного файла
     /// </summary>
-    public static string FilePath { get; set; } = "appsettings.json";
+    public string FilePath { get; }
+    #endregion
+
+    #region Constructors
+    public Configuration(string filePath)
+    {
+        FilePath = filePath;
+    }
     #endregion
 
     #region Public Methods
+    public int GetN() => Convert.ToInt32(ReadFromConfiguration("N"));
+   
+    public int GetL() => Convert.ToInt32(ReadFromConfiguration("L"));
+
+    public int GetSleep() => Convert.ToInt32(ReadFromConfiguration("Sleep"));
+
+    public string GetConnectionString() => ReadFromConfiguration("ConnectionString");
+    #endregion
+
+    #region Private Methods
     /// <summary>
     /// Чтение из конфигурационного файла
     /// </summary>
     /// <param name="element"></param>
     /// <returns></returns>
-    public static string ReadFromConfiguration(string element)
+    private string ReadFromConfiguration(string element)
     {
         Log.Debug("Configuration.ReadFromConfiguration: Start; Is Read: {Element}; FilePath: {FilePath}", element, FilePath);
         if (!File.Exists(FilePath)) InitConfiguration();
@@ -37,14 +54,12 @@ public static class Configuration
         Log.Debug("Configuration.ReadFromConfiguration: Done; Is Read: {Element}; FilePath: {FilePath}", element, FilePath);
         return configuration[element];
     }
-    #endregion
 
-    #region Private Methods
     /// <summary>
     /// Создание и инициализация конфигурационного файла необходимыми переменными
     /// </summary>
     /// <param name="fileName"></param>
-    private static void InitConfiguration()
+    private void InitConfiguration()
     {
         Log.Debug("Configuration.InitConfiguration: Start; File Path: {FilePath}", FilePath);
         int n = 9;

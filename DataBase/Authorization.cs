@@ -3,32 +3,30 @@ using Serilog;
 
 namespace DataBase;
 
-/// <summary>
-/// Статический класс, осуществляющий авторизацию
-/// </summary>
-public static class Authorization
+public class Authorization
 {
     #region Structs
     /// <summary>
     /// Стуктура для получения результата авторизации
     /// </summary>
     public struct AuthorizationResult
-    {
-
-        /// <summary>
-        /// Сообщение
-        /// </summary>
+    {       
         public string Message { get; set; }
-
-        /// <summary>
-        /// Цвет сообщения
-        /// </summary>
+      
         public string MessageColor { get; set; }
-
-        /// <summary>
-        /// Флаг успеха авторизации
-        /// </summary>
+      
         public bool IsSuccess { get; set; }
+    }
+    #endregion
+
+    #region Private Fields
+    private Context _dbContext;
+    #endregion
+
+    #region Constructors
+    public Authorization(Context dbContext)
+    {
+        _dbContext = dbContext;
     }
     #endregion
 
@@ -39,12 +37,12 @@ public static class Authorization
     /// <param name="account"></param>
     /// <param name="db"></param>
     /// <returns></returns>
-    public static async Task<AuthorizationResult> RegisterAsync(Account account, Context db)
+    public async Task<AuthorizationResult> RegisterAsync(Account account)
     {
         Log.Debug("Authorization.RegisterAsync: Start");
 
         var result = new AuthorizationResult();
-        if (!await IsAccountExistAsync(db, account.Login))
+        if (!await IsAccountExistAsync(_dbContext, account.Login))
         {
             byte[] passwordHash, passwordSalt;
             PasswordHasher.CreatePasswordHash(account.Password, out passwordHash, out passwordSalt);
@@ -54,10 +52,10 @@ public static class Authorization
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };
-            await db.Accounts.AddAsync(user);
-            await db.SaveChangesAsync();
+            await _dbContext.Accounts.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
 
-            result = GetResult("Register is success, please login!", true);
+            result = GetResult("Register is success", true);
         }
         else result = GetResult("Account is exist", false);
 
@@ -72,16 +70,16 @@ public static class Authorization
     /// <param name="account"></param>
     /// <param name="db"></param>
     /// <returns></returns>
-    public static async Task<AuthorizationResult> LoginAsync(Account account, Context db)
+    public async Task<AuthorizationResult> LoginAsync(Account account)
     {
         Log.Debug("Authorization.LoginAsync: Start");
 
         var result = new AuthorizationResult();
-        var accountDb = await db.Accounts.FirstOrDefaultAsync(x => x.Login == account.Login);
+        var accountDb = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Login == account.Login);
 
         if (accountDb == null || !PasswordHasher.VerifyPasswordHash(account.Password, accountDb.PasswordHash, accountDb.PasswordSalt))
             result = GetResult("Invalid username or password", false);
-        else result = GetResult($"Welcome, {account.Login}!", true);
+        else result = GetResult($"Login is success", true);
 
         Log.Debug("Authorization.LoginAsync: Done; Result: {@Result}", result);
 
@@ -96,7 +94,7 @@ public static class Authorization
     /// <param name="db"></param>
     /// <param name="login"></param>
     /// <returns></returns>
-    private static async Task<bool> IsAccountExistAsync(Context db, string login) =>
+    private async Task<bool> IsAccountExistAsync(Context db, string login) =>
         await db.Accounts.FirstOrDefaultAsync(x => x.Login == login) != null;
 
     /// <summary>
@@ -105,7 +103,7 @@ public static class Authorization
     /// <param name="message"></param>
     /// <param name="isSuccess"></param>
     /// <returns></returns>
-    private static AuthorizationResult GetResult(string message, bool isSuccess)
+    private AuthorizationResult GetResult(string message, bool isSuccess)
     {
         Log.Debug("Authorization.GetResult: Start");
 

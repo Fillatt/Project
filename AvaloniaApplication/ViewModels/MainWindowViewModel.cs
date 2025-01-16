@@ -21,6 +21,11 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     /// Навигация к окну основной программы
     /// </summary>
     public ReactiveCommand<Unit, IRoutableViewModel> MainCommand { get; }
+
+    /// <summary>
+    /// Навигация к окну регистрации
+    /// </summary>
+    public ReactiveCommand<Unit, IRoutableViewModel> RegisterCommand { get; }
     #endregion
 
     #region Constructors
@@ -28,7 +33,7 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     {
         AuthenticationCommand = ReactiveCommand.CreateFromObservable(NavigateAuthentication);
         MainCommand = ReactiveCommand.CreateFromObservable(NavigateMain, LoginViewModel.IsAuthenticated);
-        LoginViewModel.RegisterSelected += (sender, args) => NavigateRegister();
+        RegisterCommand = ReactiveCommand.CreateFromObservable(NavigateRegister);
         AuthenticationCommand.Execute();
     }
     #endregion

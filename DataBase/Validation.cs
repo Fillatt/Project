@@ -2,9 +2,6 @@
 
 namespace DataBase;
 
-/// <summary>
-/// Статический класс, осуществялющий валидацию
-/// </summary>
 public static class Validation
 {
     #region Structs
@@ -12,20 +9,11 @@ public static class Validation
     /// Структура для получения результата валидации
     /// </summary>
     public struct ValidationResult
-    {
-        /// <summary>
-        /// Сообщение о ошибке логина
-        /// </summary>
+    {      
         public string LoginError { get; set; }
-
-        /// <summary>
-        /// Сообщение о ошибке пароля
-        /// </summary>
+        
         public string PasswordError { get; set; }
-
-        /// <summary>
-        /// Флаг успеха валидации
-        /// </summary>
+       
         public bool IsSuccess { get; set; }
     }
     #endregion
@@ -37,12 +25,12 @@ public static class Validation
     /// <param name="login"></param>
     /// <param name="password"></param>
     /// <returns></returns>
-    public static ValidationResult GetValidation(string login, string password)
+    public static ValidationResult GetValidation(Account account)
     {
         Log.Debug("Validation.GetValidation: Start");
 
-        var loginValidation = LoginValidation(login);
-        var passwordValidation = PasswordValidation(password);
+        var loginValidation = LoginValidation(account.Login);
+        var passwordValidation = PasswordValidation(account.Password);
 
         var result = new ValidationResult
         {
@@ -97,35 +85,14 @@ public static class Validation
         return result;
     }
 
-    /// <summary>
-    /// Получение ошибки о недостаточной длине пароля
-    /// </summary>
-    /// <returns></returns>
     private static ValidationResult PasswordIsNotEnoughLength() => GetPasswordError("The password must be longer than 8 characters");
 
-    /// <summary>
-    /// Получение ошибки о пустоте пароля
-    /// </summary>
-    /// <returns></returns>
     private static ValidationResult PasswordIsEmpty() => GetPasswordError("Password can not be empty");
 
-    /// <summary>
-    /// Получение ошибки о пустоте логина
-    /// </summary>
-    /// <returns></returns>
     private static ValidationResult LoginIsEmpty() => GetLoginError("Login can not be empty");
 
-    /// <summary>
-    /// Получение ошибки о начале логина с цифры
-    /// </summary>
-    /// <returns></returns>
     private static ValidationResult LoginStartWithNumber() => GetLoginError("Login can not start with a number");
 
-    /// <summary>
-    /// Получение ошибки логина с указанным сообщением
-    /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
     private static ValidationResult GetLoginError(string message)
     {
         return new ValidationResult
@@ -135,11 +102,6 @@ public static class Validation
         };
     }
 
-    /// <summary>
-    /// Получение ошибки в пароле с указанным сообщением
-    /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
     private static ValidationResult GetPasswordError(string message)
     {
         return new ValidationResult

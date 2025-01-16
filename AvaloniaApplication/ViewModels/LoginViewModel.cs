@@ -1,7 +1,7 @@
 ﻿using DataBase;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
-using System;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -10,52 +10,17 @@ namespace AvaloniaApplication.ViewModels;
 
 public class LoginViewModel : ReactiveObject, IRoutableViewModel
 {
-    #region Private Fields
-    /// <summary>
-    /// Заголовок
-    /// </summary>
-    private static string _title = "Login";
+    #region Private Fields  
+    private string _title = "Login";
 
-    /// <summary>
-    /// Цвет заголовка
-    /// </summary>
-    private static string _titleColor = "Black";
+    private string _titleColor = "Black";
 
-    /// <summary>
-    /// Контекст базы данных
-    /// </summary>
-    private Context _db = new();
-
-    /// <summary>
-    /// Сообщение о ошибке логина
-    /// </summary>
     private string _loginError;
 
-    /// <summary>
-    /// Сообщение о ошибке пароля
-    /// </summary>
     private string _passwordError;
     #endregion
 
     #region Properties
-    /// <summary>
-    /// Заголовок
-    /// </summary>
-    public string Title
-    {
-        get => _title;
-        set { this.RaiseAndSetIfChanged(ref _title, value); }
-    }
-
-    /// <summary>
-    /// Цвет заголовка
-    /// </summary>
-    public string TitleColor
-    {
-        get => _titleColor;
-        set { this.RaiseAndSetIfChanged(ref _titleColor, value); }
-    }
-
     /// <summary>
     /// Ссылка на IScreen, которому принадлежит данная модель представления
     /// </summary>
@@ -66,28 +31,28 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     /// </summary>
     public string UrlPathSegment { get; } = "LoginViewModel";
 
-    /// <summary>
-    /// Логин
-    /// </summary>
+    public string Title
+    {
+        get => _title;
+        set { this.RaiseAndSetIfChanged(ref _title, value); }
+    }
+
+    public string TitleColor
+    {
+        get => _titleColor;
+        set { this.RaiseAndSetIfChanged(ref _titleColor, value); }
+    }
+
     public string Login { get; set; }
 
-    /// <summary>
-    /// Пароль
-    /// </summary>
     public string Password { get; set; }
 
-    /// <summary>
-    /// Сообщение о ошибке логина
-    /// </summary>
     public string LoginError
     {
         get => _loginError;
         set { this.RaiseAndSetIfChanged(ref _loginError, value); }
     }
 
-    /// <summary>
-    /// Сообщение о ошибке пароля
-    /// </summary>
     public string PasswordError
     {
         get => _passwordError;
@@ -100,22 +65,9 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     public static BehaviorSubject<bool> IsAuthenticated { get; set; } = new BehaviorSubject<bool>(false);
     #endregion
 
-    #region Events
-    /// <summary>
-    /// Событие выбора регистрации
-    /// </summary>
-    public static event EventHandler RegisterSelected;
-    #endregion
-
     #region Commands
-    /// <summary>
-    /// Начать вход в систему
-    /// </summary>
     public ReactiveCommand<Unit, Unit> StartLoginCommand { get; }
 
-    /// <summary>
-    /// Выбор регистрации
-    /// </summary>
     public ReactiveCommand<Unit, Unit> RegisterCommand { get; }
     #endregion
 
@@ -148,11 +100,6 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     }
 
     /// <summary>
-    /// Вызов события выбора регистрации
-    /// </summary>
-    private void NavigateRegister() => RegisterSelected(this, new EventArgs());
-
-    /// <summary>
     /// Начать валидацию
     /// </summary>
     /// <returns></returns>
@@ -161,7 +108,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("LoginViewModel.GetValidation: Start");
 
         CleanErrorMessages();
-        var validation = Validation.GetValidation(Login, Password);
+        var validation = Validation.GetValidation(new Account { Login = Login, Password = Password });
         LoginError = validation.LoginError;
         PasswordError = validation.PasswordError;
 
@@ -185,7 +132,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     }
 
     /// <summary>
-    /// Очистить заголово
+    /// Очистить заголовок
     /// </summary>
     private void ClearTitle()
     {
@@ -206,15 +153,36 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var result = await Authorization.LoginAsync(new Account { Login = Login, Password = Password }, _db);
-        Title = result.Message;
-        TitleColor = result.MessageColor;
-        IsAuthenticated.OnNext(result.IsSuccess);
-
+        var authorizationService = Services.ServiceProvider.GetRequiredService<Authorization>();
+        var result = await authorizationService.LoginAsync(new Account { Login = Login, Password = Password });
+        if (result.IsSuccess) NavigateMain();
+        else
+        {
+            Title = result.Message;
+            TitleColor = result.MessageColor;
+        }
+        if (!IsAuthenticated.Value) IsAuthenticated.OnNext(result.IsSuccess);
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Done; Is success: {IsSuccess}", result.IsSuccess);
         if (!result.IsSuccess) Log.Warning("LoginViewModel.StartAuthorizationAsync: Authorization is fail; Message: {Message}", result.Message);
         Log.Information("Authorization: End");
     }
 
+    /// <summary>
+    /// Переход к главному окну
+    /// </summary>
+    private void NavigateMain()
+    {
+        var vm = (MainWindowViewModel)HostScreen;
+        vm.MainCommand.Execute();
+    }
+
+    /// <summary>
+    /// Переход к окну регистрации
+    /// </summary>
+    public void NavigateRegister()
+    {
+        var vm = (MainWindowViewModel)HostScreen;
+        vm.RegisterCommand.Execute();
+    }
     #endregion
 }

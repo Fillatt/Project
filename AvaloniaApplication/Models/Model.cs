@@ -1,8 +1,8 @@
 ﻿using Avalonia.Collections;
 using ConsoleApp;
 using Figure;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System;
 using System.Collections.Generic;
 
 namespace AvaloniaApplication.Models;
@@ -27,9 +27,9 @@ public class Model
     #region Constructors
     public Model()
     {
-        _N = Convert.ToInt32(Configuration.ReadFromConfiguration("N"));
-        _L = Convert.ToInt32(Configuration.ReadFromConfiguration("L"));
-        _sleep = Convert.ToInt32(Configuration.ReadFromConfiguration("Sleep"));
+        _N = Services.ServiceProvider.GetRequiredService<Configuration>().GetN();
+        _L = Services.ServiceProvider.GetRequiredService<Configuration>().GetL();
+        _sleep = Services.ServiceProvider.GetRequiredService<Configuration>().GetSleep();
         _oddNumbers = Calculations.OddNumbersInit();
     }
     #endregion

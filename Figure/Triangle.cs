@@ -4,11 +4,7 @@ using System.Text;
 namespace Figure;
 
 public class Triangle : AbstractFigure
-{
-    /// <summary>
-    /// Конструктор
-    /// </summary>
-    /// <param name="speed"></param>
+{  
     public Triangle(double speed) : base(speed) { }
 
     public override string Type => "Triangle";

@@ -7,11 +7,7 @@ namespace Figure;
 /// Класс, представляющий круг
 /// </summary>
 public class Circle : AbstractFigure
-{
-    /// <summary>
-    /// Конструктор
-    /// </summary>
-    /// <param name="speed"></param>
+{    
     public Circle(double speed) : base(speed)
     {
         Color = Color.Bright;

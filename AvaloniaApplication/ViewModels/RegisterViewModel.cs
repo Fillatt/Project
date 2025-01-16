@@ -1,4 +1,5 @@
 ﻿using DataBase;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
 using System.Reactive;
@@ -8,30 +9,13 @@ namespace AvaloniaApplication.ViewModels;
 
 public class RegisterViewModel : ReactiveObject, IRoutableViewModel
 {
-    #region Private Fields
-    /// <summary>
-    /// Заголовок
-    /// </summary>
+    #region Private Fields   
     private string _title = "Registration";
 
-    /// <summary>
-    /// Цвет заголовка
-    /// </summary>
     private string _titleColor = "Black";
 
-    /// <summary>
-    /// Контекст базы данных
-    /// </summary>
-    private Context _db = new();
-
-    /// <summary>
-    /// Сообщение о ошибке логина
-    /// </summary>
     private string _loginError;
 
-    /// <summary>
-    /// Сообщение о ошибке пароля
-    /// </summary>
     private string _passwordError;
     #endregion
 
@@ -93,17 +77,18 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     }
     #endregion
 
-    #region Commands
-    /// <summary>
-    /// Начать регистрация
-    /// </summary>
+    #region Commands   
     public ReactiveCommand<Unit, Unit> StartRegisterCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> AuthenticationCommand { get; }
     #endregion
 
     #region Constructors
     public RegisterViewModel(IScreen screen)
     {
+        HostScreen = screen;
         StartRegisterCommand = ReactiveCommand.CreateFromTask(StartRegisterAsync);
+        AuthenticationCommand = ReactiveCommand.Create(NavigateAuthentication);
     }
     #endregion
 
@@ -135,7 +120,7 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.GetValidation: Start");
 
         CleanErrorMessages();
-        var validation = Validation.GetValidation(Login, Password);
+        var validation = Validation.GetValidation(new Account { Login = Login, Password = Password });
         LoginError = validation.LoginError;
         PasswordError = validation.PasswordError;
 
@@ -180,13 +165,28 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var result = await Authorization.RegisterAsync(new Account { Login = Login, Password = Password }, _db);
-        Title = result.Message;
-        TitleColor = result.MessageColor;
+        var authorizationService = Services.ServiceProvider.GetRequiredService<Authorization>();
+        var result = await authorizationService.RegisterAsync(new Account { Login = Login, Password = Password });
+        if (result.IsSuccess) NavigateAuthentication();
+        else
+        {
+            Title = result.Message;
+            TitleColor = result.MessageColor;
+        }
 
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Done; Is success: {IsSuccess}", result.IsSuccess);
         if (!result.IsSuccess) Log.Warning("RegisterViewModel.StartAuthorizationAsync: Authorization is fail; Message: {Message}", result.Message);
         Log.Information("Authorization: End");
+    }
+
+    /// <summary>
+    /// Навигация к окну аутентификации
+    /// </summary>
+    /// <returns></returns>
+    public void NavigateAuthentication()
+    {
+        var vm = (MainWindowViewModel)HostScreen;
+        vm.AuthenticationCommand.Execute();
     }
     #endregion
 }

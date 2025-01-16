@@ -4,11 +4,7 @@ using System.Text;
 namespace Figure;
 
 public class Square : AbstractFigure
-{
-    /// <summary>
-    /// Конструктор
-    /// </summary>
-    /// <param name="speed"></param>
+{  
     public Square(double speed) : base(speed) { }
 
     public override string Type => "Square";
