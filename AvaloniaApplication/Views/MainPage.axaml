@@ -7,7 +7,7 @@
              x:Class="AvaloniaApplication.Views.MainPage"
 			 x:DataType="vm:MainViewModel">
 	<DockPanel Margin="20">
-		<StackPanel>
+		<StackPanel HorizontalAlignment="Center">
 			<ItemsControl ItemsSource="{Binding Amounts}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>

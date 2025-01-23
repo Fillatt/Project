@@ -5,15 +5,13 @@ namespace DataBase;
 
 public class Authorization
 {
-    #region Structs
+    #region Records
     /// <summary>
-    /// Стуктура для получения результата авторизации
+    /// Запись для получения результата авторизации
     /// </summary>
-    public struct AuthorizationResult
+    public record AuthorizationResult
     {       
-        public string Message { get; set; }
-      
-        public string MessageColor { get; set; }
+        public string Message { get; set; }              
       
         public bool IsSuccess { get; set; }
     }
@@ -42,7 +40,7 @@ public class Authorization
         Log.Debug("Authorization.RegisterAsync: Start");
 
         var result = new AuthorizationResult();
-        if (!await IsAccountExistAsync(_dbContext, account.Login))
+        if (!await IsAccountExistAsync(account.Login))
         {
             byte[] passwordHash, passwordSalt;
             PasswordHasher.CreatePasswordHash(account.Password, out passwordHash, out passwordSalt);
@@ -94,8 +92,8 @@ public class Authorization
     /// <param name="db"></param>
     /// <param name="login"></param>
     /// <returns></returns>
-    private async Task<bool> IsAccountExistAsync(Context db, string login) =>
-        await db.Accounts.FirstOrDefaultAsync(x => x.Login == login) != null;
+    private async Task<bool> IsAccountExistAsync(string login) =>
+        await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Login == login) != null;
 
     /// <summary>
     /// Получение AuthorizationResult c указанным сообщением и флагом успеха авторизации
@@ -109,8 +107,7 @@ public class Authorization
 
         var result = new AuthorizationResult
         {
-            Message = message,
-            MessageColor = isSuccess ? "Green" : "Red",
+            Message = message,            
             IsSuccess = isSuccess
         };
 

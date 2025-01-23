@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
+using Splat;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -84,9 +85,9 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     #endregion
 
     #region Constructors
-    public RegisterViewModel(IScreen screen)
+    public RegisterViewModel(IScreen screen = null)
     {
-        HostScreen = screen;
+        HostScreen = screen ?? Locator.Current.GetService<IScreen>();
         StartRegisterCommand = ReactiveCommand.CreateFromTask(StartRegisterAsync);
         AuthenticationCommand = ReactiveCommand.Create(NavigateAuthentication);
     }
@@ -165,13 +166,13 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var authorizationService = Services.ServiceProvider.GetRequiredService<Authorization>();
+        var authorizationService = Services.Provider.GetRequiredService<Authorization>();
         var result = await authorizationService.RegisterAsync(new Account { Login = Login, Password = Password });
         if (result.IsSuccess) NavigateAuthentication();
         else
         {
             Title = result.Message;
-            TitleColor = result.MessageColor;
+            TitleColor = "Red";
         }
 
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Done; Is success: {IsSuccess}", result.IsSuccess);
@@ -183,10 +184,6 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     /// Навигация к окну аутентификации
     /// </summary>
     /// <returns></returns>
-    public void NavigateAuthentication()
-    {
-        var vm = (MainWindowViewModel)HostScreen;
-        vm.AuthenticationCommand.Execute();
-    }
+    public void NavigateAuthentication() => Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication();
     #endregion
 }

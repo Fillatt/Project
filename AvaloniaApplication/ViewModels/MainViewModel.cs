@@ -3,6 +3,7 @@ using AvaloniaApplication.Models;
 using Figure;
 using ReactiveUI;
 using Serilog;
+using Splat;
 using System;
 using System.Reactive;
 using System.Reactive.Subjects;
@@ -93,9 +94,9 @@ public class MainViewModel : ReactiveObject, IRoutableViewModel
     #endregion
 
     #region Constructors
-    public MainViewModel(IScreen screen)
+    public MainViewModel(IScreen screen = null)
     {
-        HostScreen = screen;
+        HostScreen = screen ?? Locator.Current.GetService<IScreen>();
         _model = new();
         StartCommand = ReactiveCommand.CreateFromTask(StartAsync);
         StopCommand = ReactiveCommand.Create(Stop, _isStart);

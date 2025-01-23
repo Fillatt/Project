@@ -4,11 +4,11 @@ namespace DataBase;
 
 public static class Validation
 {
-    #region Structs
+    #region Records
     /// <summary>
-    /// Структура для получения результата валидации
+    /// Запись для получения результата валидации
     /// </summary>
-    public struct ValidationResult
+    public record ValidationResult
     {      
         public string LoginError { get; set; }
         

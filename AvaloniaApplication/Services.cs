@@ -10,7 +10,11 @@ namespace AvaloniaApplication
 {
     public static class Services
     {
-        public static IServiceProvider ServiceProvider { get; set; }
+        #region Properties
+        public static IServiceProvider Provider { get; set; }
+        #endregion
+
+        #region Constructors
         static Services()
         {
             var loggerConfiguration = new LoggerConfiguration()
@@ -23,12 +27,14 @@ namespace AvaloniaApplication
 
             Configuration configuration = new("appsettings.json");
 
-            ServiceProvider = new ServiceCollection()
+            Provider = new ServiceCollection()
                 .AddSingleton(configuration)
                 .AddSingleton<ILogger>(loggerConfiguration)
+                .AddSingleton<NavigateService>()
                 .AddDbContext<Context>(options => options.UseSqlServer(configuration.GetConnectionString()))
                 .AddTransient<Authorization>()
                 .BuildServiceProvider();
         }
+        #endregion
     }
 }

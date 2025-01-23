@@ -5,7 +5,9 @@ using Avalonia.Markup.Xaml;
 using AvaloniaApplication.ViewModels;
 using AvaloniaApplication.Views;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using Serilog;
+using Splat;
 using System.Linq;
 
 namespace AvaloniaApplication
@@ -21,13 +23,21 @@ namespace AvaloniaApplication
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Log.Logger = Services.ServiceProvider.GetRequiredService<ILogger>();
+                // Регистрация моделей представления
+                Locator.CurrentMutable.RegisterConstant<IScreen>(new MainWindowViewModel());
+                Locator.CurrentMutable.Register(() => new LoginViewModel(), typeof(IRoutableViewModel), contract: "Login");
+                Locator.CurrentMutable.Register(() => new RegisterViewModel(), typeof(IRoutableViewModel), contract: "Register");
+                Locator.CurrentMutable.Register(() => new MainViewModel(), typeof(IRoutableViewModel), contract: "Main");
+
+                Log.Logger = Services.Provider.GetRequiredService<Serilog.ILogger>();
 
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel()
+                    DataContext = Locator.Current.GetService<IScreen>()
                 };
+
+                Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication();
             }
 
             base.OnFrameworkInitializationCompleted();

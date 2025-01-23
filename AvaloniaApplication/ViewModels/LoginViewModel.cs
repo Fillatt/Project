@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
+using Splat;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -72,9 +73,9 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     #endregion
 
     #region Constructors
-    public LoginViewModel(IScreen screen)
+    public LoginViewModel(IScreen screen = null)
     {
-        HostScreen = screen;
+        HostScreen = screen ?? Locator.Current.GetService<IScreen>();
         StartLoginCommand = ReactiveCommand.CreateFromTask(StartLoginAsync);
         RegisterCommand = ReactiveCommand.Create(NavigateRegister);
     }
@@ -153,13 +154,13 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var authorizationService = Services.ServiceProvider.GetRequiredService<Authorization>();
+        var authorizationService = Services.Provider.GetRequiredService<Authorization>();
         var result = await authorizationService.LoginAsync(new Account { Login = Login, Password = Password });
         if (result.IsSuccess) NavigateMain();
         else
         {
             Title = result.Message;
-            TitleColor = result.MessageColor;
+            TitleColor = "Red";
         }
         if (!IsAuthenticated.Value) IsAuthenticated.OnNext(result.IsSuccess);
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Done; Is success: {IsSuccess}", result.IsSuccess);
@@ -170,19 +171,12 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     /// <summary>
     /// Переход к главному окну
     /// </summary>
-    private void NavigateMain()
-    {
-        var vm = (MainWindowViewModel)HostScreen;
-        vm.MainCommand.Execute();
-    }
+    private void NavigateMain() => Services.Provider.GetRequiredService<NavigateService>().NavigateMain();
+    
 
     /// <summary>
     /// Переход к окну регистрации
     /// </summary>
-    public void NavigateRegister()
-    {
-        var vm = (MainWindowViewModel)HostScreen;
-        vm.RegisterCommand.Execute();
-    }
+    public void NavigateRegister() => Services.Provider.GetRequiredService<NavigateService>().NavigateRegister();
     #endregion
 }

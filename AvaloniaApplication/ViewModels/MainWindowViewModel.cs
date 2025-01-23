@@ -1,5 +1,5 @@
-﻿using ReactiveUI;
-using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using System.Reactive;
 
 namespace AvaloniaApplication.ViewModels;
@@ -21,40 +21,16 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     /// Навигация к окну основной программы
     /// </summary>
     public ReactiveCommand<Unit, IRoutableViewModel> MainCommand { get; }
-
-    /// <summary>
-    /// Навигация к окну регистрации
-    /// </summary>
-    public ReactiveCommand<Unit, IRoutableViewModel> RegisterCommand { get; }
     #endregion
 
     #region Constructors
     public MainWindowViewModel()
     {
-        AuthenticationCommand = ReactiveCommand.CreateFromObservable(NavigateAuthentication);
-        MainCommand = ReactiveCommand.CreateFromObservable(NavigateMain, LoginViewModel.IsAuthenticated);
-        RegisterCommand = ReactiveCommand.CreateFromObservable(NavigateRegister);
-        AuthenticationCommand.Execute();
+        AuthenticationCommand = ReactiveCommand
+            .CreateFromObservable(Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication);
+
+        MainCommand = ReactiveCommand
+            .CreateFromObservable(Services.Provider.GetRequiredService<NavigateService>().NavigateMain, LoginViewModel.IsAuthenticated);
     }
-    #endregion
-
-    #region Private Methods
-    /// <summary>
-    /// Навигация к окну аутентификации
-    /// </summary>
-    /// <returns></returns>
-    private IObservable<IRoutableViewModel> NavigateAuthentication() => Router.Navigate.Execute(new LoginViewModel(this));
-
-    /// <summary>
-    /// Навгация к окну основной программы
-    /// </summary>
-    /// <returns></returns>
-    private IObservable<IRoutableViewModel> NavigateMain() => Router.Navigate.Execute(new MainViewModel(this));
-
-    /// <summary>
-    /// Навигация к окну регистрации
-    /// </summary>
-    /// <returns></returns>
-    private IObservable<IRoutableViewModel> NavigateRegister() => Router.Navigate.Execute(new RegisterViewModel(this));
     #endregion
 }

@@ -27,9 +27,9 @@ public class Model
     #region Constructors
     public Model()
     {
-        _N = Services.ServiceProvider.GetRequiredService<Configuration>().GetN();
-        _L = Services.ServiceProvider.GetRequiredService<Configuration>().GetL();
-        _sleep = Services.ServiceProvider.GetRequiredService<Configuration>().GetSleep();
+        _N = Services.Provider.GetRequiredService<Configuration>().GetN();
+        _L = Services.Provider.GetRequiredService<Configuration>().GetL();
+        _sleep = Services.Provider.GetRequiredService<Configuration>().GetSleep();
         _oddNumbers = Calculations.OddNumbersInit();
     }
     #endregion
