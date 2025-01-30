@@ -6,6 +6,10 @@ namespace AvaloniaApplication.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject, IScreen
 {
+    #region Private Fields
+    NavigationService _navigationService;
+    #endregion
+
     #region Properties
     /// <summary>
     /// Маршрутизатор
@@ -21,16 +25,21 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     /// Навигация к окну основной программы
     /// </summary>
     public ReactiveCommand<Unit, IRoutableViewModel> MainCommand { get; }
+
+    /// <summary>
+    /// Навигация к окну API
+    /// </summary>
+    public ReactiveCommand<Unit, IRoutableViewModel> ApiCommand { get; }
     #endregion
 
     #region Constructors
     public MainWindowViewModel()
     {
-        AuthenticationCommand = ReactiveCommand
-            .CreateFromObservable(Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication);
+        _navigationService = Services.Provider.GetRequiredService<NavigationService>();
 
-        MainCommand = ReactiveCommand
-            .CreateFromObservable(Services.Provider.GetRequiredService<NavigateService>().NavigateMain, LoginViewModel.IsAuthenticated);
+        AuthenticationCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateAuthentication);
+        MainCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateMain, LoginViewModel.IsAuthenticated);
+        ApiCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateApi, LoginViewModel.IsAuthenticated);
     }
     #endregion
 }

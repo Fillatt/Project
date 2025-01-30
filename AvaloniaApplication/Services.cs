@@ -1,4 +1,5 @@
-﻿using ConsoleApp;
+﻿using APIClient;
+using ConsoleApp;
 using DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,9 +31,12 @@ namespace AvaloniaApplication
             Provider = new ServiceCollection()
                 .AddSingleton(configuration)
                 .AddSingleton<ILogger>(loggerConfiguration)
-                .AddSingleton<NavigateService>()
-                .AddDbContext<Context>(options => options.UseSqlServer(configuration.GetConnectionString()))
+                .AddSingleton<NavigationService>()
+                .AddDbContext<AccountContext>(options => options.UseSqlServer(configuration.GetAccountConnectionString()))   
+                .AddDbContext<ApiRequestResultContext>(options => options.UseSqlServer(configuration.GetApiRequestResultConnectionString()))
                 .AddTransient<Authorization>()
+                .AddTransient<DbService>()
+                .AddTransient<APIService>()
                 .BuildServiceProvider();
         }
         #endregion

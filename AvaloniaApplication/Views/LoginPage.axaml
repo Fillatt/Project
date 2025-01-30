@@ -1,29 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:vm="using:AvaloniaApplication.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="AvaloniaApplication.Views.LoginPage"
-			 x:DataType="vm:LoginViewModel"
-			 Width="400" Height="195">
-	<StackPanel>
-		<StackPanel Orientation="Horizontal">
+			 x:DataType="vm:LoginViewModel">
+	<StackPanel VerticalAlignment="Center" Width="400">
+		<StackPanel>
 			<TextBlock Text="{Binding Title}"
 					   Foreground="{Binding TitleColor}"/>
+			<TextBox Margin="0 10 0 0"
+					 Text="{Binding Login}"
+					 Watermark="Please, enter login..."/>
+			<TextBlock Foreground="Red"
+					   Text="{Binding LoginError}"
+					   FontSize="12"/>
+			<TextBox Margin="0 10 0 0"
+					 Text="{Binding Password}"
+					 Watermark="Please, enter your password..."
+					 PasswordChar="*"/>
+			<TextBlock Foreground="Red"
+					   Text="{Binding PasswordError}"
+					   FontSize="12"/>
 		</StackPanel>
-		<TextBox Margin="0 10 0 0"
-				 Text="{Binding Login}"
-				 Watermark="Please, enter login..."/>
-		<TextBlock Foreground="Red"
-				   Text="{Binding LoginError}"
-				   FontSize="12"/>
-		<TextBox Margin="0 10 0 0"
-				 Text="{Binding Password}"
-				 Watermark="Please, enter your password..."
-				 PasswordChar="*"/>
-		<TextBlock Foreground="Red"
-				   Text="{Binding PasswordError}"
-				   FontSize="12"/>
 		<StackPanel Orientation="Horizontal">
 		<Button Margin="0 10"
                 Content="Login"

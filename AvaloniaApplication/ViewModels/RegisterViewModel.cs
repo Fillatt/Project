@@ -184,6 +184,6 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     /// Навигация к окну аутентификации
     /// </summary>
     /// <returns></returns>
-    public void NavigateAuthentication() => Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication();
+    public void NavigateAuthentication() => Services.Provider.GetRequiredService<NavigationService>().NavigateAuthentication();
     #endregion
 }

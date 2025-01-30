@@ -28,6 +28,7 @@ namespace AvaloniaApplication
                 Locator.CurrentMutable.Register(() => new LoginViewModel(), typeof(IRoutableViewModel), contract: "Login");
                 Locator.CurrentMutable.Register(() => new RegisterViewModel(), typeof(IRoutableViewModel), contract: "Register");
                 Locator.CurrentMutable.Register(() => new MainViewModel(), typeof(IRoutableViewModel), contract: "Main");
+                Locator.CurrentMutable.Register(() => new APIViewModel(), typeof(IRoutableViewModel), contract: "API");
 
                 Log.Logger = Services.Provider.GetRequiredService<Serilog.ILogger>();
 
@@ -37,7 +38,7 @@ namespace AvaloniaApplication
                     DataContext = Locator.Current.GetService<IScreen>()
                 };
 
-                Services.Provider.GetRequiredService<NavigateService>().NavigateAuthentication();
+                Services.Provider.GetRequiredService<NavigationService>().NavigateAuthentication();
             }
 
             base.OnFrameworkInitializationCompleted();

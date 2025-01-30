@@ -57,8 +57,7 @@ public static class Validation
         Log.Debug("Validation.LoginValidation: Start");
 
         ValidationResult result = new();
-        if (IsEmpty(login)) result = LoginIsEmpty();
-        else if (IsDigit(login)) result = LoginStartWithNumber();        
+        if (IsEmpty(login)) result = LoginIsEmpty();          
         else result.IsSuccess = true;
 
         Log.Debug("Validation.LoginValidation: Done; Result: {@Result}", result);
@@ -76,8 +75,7 @@ public static class Validation
         Log.Debug("Validation.PasswordValidation: Start");
 
         ValidationResult result = new();
-        if (IsEmpty(password)) result = PasswordIsEmpty();
-        else if (IsEnoughLength(password)) result = PasswordIsNotEnoughLength();
+        if (IsEmpty(password)) result = PasswordIsEmpty();       
         else result.IsSuccess = true;
 
         Log.Debug("Validation.PasswordValidation: Done; Result: {@Result}", result);
@@ -85,13 +83,9 @@ public static class Validation
         return result;
     }
 
-    private static ValidationResult PasswordIsNotEnoughLength() => GetPasswordError("The password must be longer than 8 characters");
-
     private static ValidationResult PasswordIsEmpty() => GetPasswordError("Password can not be empty");
 
     private static ValidationResult LoginIsEmpty() => GetLoginError("Login can not be empty");
-
-    private static ValidationResult LoginStartWithNumber() => GetLoginError("Login can not start with a number");
 
     private static ValidationResult GetLoginError(string message)
     {
@@ -110,11 +104,7 @@ public static class Validation
             IsSuccess = false
         };
     }
-    
-    private static bool IsEnoughLength(string password) => password.Length < 8;
    
     private static bool IsEmpty(string element) => string.IsNullOrEmpty(element);
-
-    private static bool IsDigit(string element) => char.IsDigit(element[0]);
     #endregion
 }

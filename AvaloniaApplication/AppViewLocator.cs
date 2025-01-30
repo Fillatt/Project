@@ -12,6 +12,7 @@ public class AppViewLocator : ReactiveUI.IViewLocator
         LoginViewModel context => new LoginPage { DataContext = context },
         MainViewModel context => new MainPage { DataContext = context },
         RegisterViewModel content => new RegisterPage { DataContext = content },
+        APIViewModel content => new APIPage { DataContext = content },
         _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
     };
 }

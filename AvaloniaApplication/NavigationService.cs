@@ -5,7 +5,7 @@ using System;
 
 namespace AvaloniaApplication;
 
-public class NavigateService
+public class NavigationService
 {
     #region Public Methods
     /// <summary>
@@ -28,5 +28,12 @@ public class NavigateService
     /// <returns></returns>
     public IObservable<IRoutableViewModel> NavigateRegister() =>
         Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("Register"));
+
+    /// <summary>
+    /// Навигация к окну с интерфейсом API 
+    /// </summary>
+    /// <returns></returns>
+    public IObservable<IRoutableViewModel> NavigateApi() =>
+        Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("API"));
     #endregion
 }

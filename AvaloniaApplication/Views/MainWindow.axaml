@@ -2,24 +2,26 @@
 		xmlns:rxui="http://reactiveui.net"
 		xmlns:app="clr-namespace:AvaloniaApplication"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:AvaloniaApplication.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="using:AvaloniaApplication.ViewModels"     
+		Height="550"
+		Width="1000"
         x:Class="AvaloniaApplication.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		WindowStartupLocation="CenterScreen"
         Icon="/Assets/avalonia-logo.ico"
         Title="AvaloniaApplication">
 	<StackPanel Orientation="Vertical">		
-		<StackPanel Orientation="Horizontal">
+		<DockPanel VerticalAlignment="Top">
 			<Button Content="Authentication" Command="{Binding AuthenticationCommand}"/>
 			<Button Content="Main" Command="{Binding MainCommand}"/>
-		</StackPanel>
-		<rxui:RoutedViewHost Router="{Binding Router}" Height="525">
-			<rxui:RoutedViewHost.ViewLocator>
-				<app:AppViewLocator />
-			</rxui:RoutedViewHost.ViewLocator>	
-		</rxui:RoutedViewHost>
+			<Button Content="API" Command="{Binding ApiCommand}"/>
+		</DockPanel>
+		<DockPanel VerticalAlignment="Center" Height="500">
+			<rxui:RoutedViewHost Router="{Binding Router}">
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator />
+				</rxui:RoutedViewHost.ViewLocator>	
+			</rxui:RoutedViewHost>
+		</DockPanel>
 	</StackPanel>
 </Window>

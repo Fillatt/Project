@@ -2,13 +2,15 @@
 using Serilog;
 using Serilog.Core;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Serialization;
 
 namespace ConsoleApp;
 
 /// <summary>
 /// Класс для взаимодействия с конфигурационным файлом
 /// </summary>
-public class Configuration
+public partial class Configuration
 {
     #region Properties
     /// <summary>
@@ -31,7 +33,11 @@ public class Configuration
 
     public int GetSleep() => Convert.ToInt32(ReadFromConfiguration("Sleep"));
 
-    public string GetConnectionString() => ReadFromConfiguration("ConnectionString");
+    public string GetAccountConnectionString() => ReadFromConfiguration("AccountConnection");
+
+    public string GetApiRequestResultConnectionString() => ReadFromConfiguration("ApiRequestResultConnection");
+   
+    public string GetApiUrl() => ReadFromConfiguration("ApiUrl");
     #endregion
 
     #region Private Methods
@@ -65,17 +71,24 @@ public class Configuration
         int n = 9;
         int l = 11;
         int sleep = 3000;
-        string connectionString = @"Server=(localdb)\mssqllocaldb;Database=Account;Trusted_Connection=True;";
-        ConfigVariables values = new(n, l, sleep, connectionString);
+
+        string accountConnection = @"Server=(localdb)\mssqllocaldb;Database=Accounts;Trusted_Connection=True;";
+        string apiRequestResultConnection = @"Server=(localdb)\mssqllocaldb;Database=ApiRequestsResults;Trusted_Connection=True;";
+       
+        string apiUrl = "https://official-joke-api.appspot.com";
+
+        ConfigVariables values = new(n, l, sleep, accountConnection, apiRequestResultConnection, apiUrl);
         File.WriteAllText(FilePath, JsonSerializer.Serialize(values));
-        Log.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; N: {N}; L: {L}; sleep: {Sleep}; ConnectionString: {ConnectionString}", FilePath, values.N, values.L, values.Sleep, values.ConectionString);
+        Log.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; " +
+            "N: {N}; L: {L}; sleep: {Sleep}; " +
+            "AccountConnection: {AccountConnection}; " +
+            "ApiRequestResultConnection: {ApiRequestResultConnection}; " +
+            "ApiUrl: {ApiUrl}", FilePath, values.N, values.L, values.Sleep, values.AccountConnection, values.ApiRequestResultConnection, values.ApiUrl);
     }
     #endregion
 
     #region Records
-    /// <summary>
-    /// Запись, представляющая объект, содержащий небходимые перменные для сериализации в конфигурационный файл
-    /// </summary>
-    private record ConfigVariables(int N, int L, int Sleep, string ConectionString);
+    public record ConfigVariables(int N, int L, int Sleep, string AccountConnection, string ApiRequestResultConnection, string ApiUrl);
+
     #endregion
 }

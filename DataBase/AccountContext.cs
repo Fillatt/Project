@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ConsoleApp;
 
 namespace DataBase;
 
 /// <summary>
 /// Контекст базы данных
 /// </summary>
-public class Context : DbContext
+public class AccountContext : DbContext
 {
     public DbSet<AccountDB> Accounts => Set<AccountDB>();
 
-    public Context(DbContextOptions<Context> options) : base(options)
+    public AccountContext(DbContextOptions<AccountContext> options) : base(options)
     {
         Database.EnsureCreated();        
     }    

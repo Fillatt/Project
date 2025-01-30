@@ -18,13 +18,13 @@ public class Authorization
     #endregion
 
     #region Private Fields
-    private Context _dbContext;
+    private DbService _dbService;
     #endregion
 
     #region Constructors
-    public Authorization(Context dbContext)
+    public Authorization(DbService dbService)
     {
-        _dbContext = dbContext;
+        _dbService = dbService;
     }
     #endregion
 
@@ -40,19 +40,9 @@ public class Authorization
         Log.Debug("Authorization.RegisterAsync: Start");
 
         var result = new AuthorizationResult();
-        if (!await IsAccountExistAsync(account.Login))
+        if (!await _dbService.IsAccountExistAsync(account))
         {
-            byte[] passwordHash, passwordSalt;
-            PasswordHasher.CreatePasswordHash(account.Password, out passwordHash, out passwordSalt);
-            AccountDB user = new AccountDB
-            {
-                Login = account.Login,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
-            };
-            await _dbContext.Accounts.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-
+            await _dbService.Add(account);
             result = GetResult("Register is success", true);
         }
         else result = GetResult("Account is exist", false);
@@ -73,10 +63,8 @@ public class Authorization
         Log.Debug("Authorization.LoginAsync: Start");
 
         var result = new AuthorizationResult();
-        var accountDb = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Login == account.Login);
 
-        if (accountDb == null || !PasswordHasher.VerifyPasswordHash(account.Password, accountDb.PasswordHash, accountDb.PasswordSalt))
-            result = GetResult("Invalid username or password", false);
+        if (!(await _dbService.VerifyAccount(account))) result = GetResult("Invalid username or password", false);
         else result = GetResult($"Login is success", true);
 
         Log.Debug("Authorization.LoginAsync: Done; Result: {@Result}", result);
@@ -86,15 +74,6 @@ public class Authorization
     #endregion
 
     #region Private Methods
-    /// <summary>
-    /// Проверка наличия аккаунта в базе данных
-    /// </summary>
-    /// <param name="db"></param>
-    /// <param name="login"></param>
-    /// <returns></returns>
-    private async Task<bool> IsAccountExistAsync(string login) =>
-        await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Login == login) != null;
-
     /// <summary>
     /// Получение AuthorizationResult c указанным сообщением и флагом успеха авторизации
     /// </summary>

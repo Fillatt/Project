@@ -82,7 +82,6 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     #endregion
 
     #region Private Methods
-
     /// <summary>
     /// Начать вход в систему
     /// </summary>
@@ -171,12 +170,12 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     /// <summary>
     /// Переход к главному окну
     /// </summary>
-    private void NavigateMain() => Services.Provider.GetRequiredService<NavigateService>().NavigateMain();
+    private void NavigateMain() => Services.Provider.GetRequiredService<NavigationService>().NavigateMain();
     
 
     /// <summary>
     /// Переход к окну регистрации
     /// </summary>
-    public void NavigateRegister() => Services.Provider.GetRequiredService<NavigateService>().NavigateRegister();
+    public void NavigateRegister() => Services.Provider.GetRequiredService<NavigationService>().NavigateRegister();
     #endregion
 }
