@@ -8,6 +8,6 @@ public partial class MainPage : ReactiveUserControl<MainViewModel>
 {
     public MainPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

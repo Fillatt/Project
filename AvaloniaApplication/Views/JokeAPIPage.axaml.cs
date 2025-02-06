@@ -8,6 +8,6 @@ public partial class JokeAPIPage : ReactiveUserControl<JokeAPIViewModel>
 {
     public JokeAPIPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

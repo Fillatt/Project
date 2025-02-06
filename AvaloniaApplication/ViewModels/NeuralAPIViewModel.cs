@@ -2,10 +2,14 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using AvaloniaApplication.Services;
+using ConsoleApp;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Splat;
+using System;
 using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,15 +27,15 @@ public class NeuralAPIViewModel : ReactiveObject, IRoutableViewModel
 
     private IFilesService _filesService;
 
-    private CancellationToken _stopToken;
+    private CancellationTokenSource _checkStopTokenSource;
 
-    private Bitmap? _chosenImageFileInBitmap;
+    private Bitmap? _imageFileBitmap;
 
-    private IStorageFile? _chosenImageFile;
+    private IStorageFile? _imageFile;
 
-    private Bitmap? _receivedImageFileInBitmap;
+    private NeuralAPIResponse _response;
 
-    private IStorageFile? _receivedImageFile;
+    private string _connectionIndicatorColor;
     #endregion
 
     #region Properties
@@ -51,21 +55,27 @@ public class NeuralAPIViewModel : ReactiveObject, IRoutableViewModel
         set { this.RaiseAndSetIfChanged(ref _urlPath, value); }
     }
 
-    public Bitmap? ChosenImageFile
+    public Bitmap? ImageFile
     {
-        get => _chosenImageFileInBitmap;
-        set { this.RaiseAndSetIfChanged(ref _chosenImageFileInBitmap, value); }
-    }
-
-    public Bitmap? ReceivedImageFile
-    {
-        get => _receivedImageFileInBitmap;
-        set { this.RaiseAndSetIfChanged(ref _receivedImageFileInBitmap, value); }
+        get => _imageFileBitmap;
+        set { this.RaiseAndSetIfChanged(ref _imageFileBitmap, value); }
     }
 
     public BehaviorSubject<bool> IsFileChosen { get; set; } = new BehaviorSubject<bool>(false);
 
     public BehaviorSubject<bool> IsFileSended { get; set; } = new BehaviorSubject<bool>(false);
+
+    public NeuralAPIResponse Response
+    {
+        get => _response;
+        set => this.RaiseAndSetIfChanged(ref _response, value);
+    }
+
+    public string ConnectionIndicatorColor
+    {
+        get => _connectionIndicatorColor;
+        set => this.RaiseAndSetIfChanged(ref _connectionIndicatorColor, value);
+    }
     #endregion
 
     #region Commands
@@ -76,8 +86,6 @@ public class NeuralAPIViewModel : ReactiveObject, IRoutableViewModel
     public ReactiveCommand<Unit, Unit> OpenImageFileCommand { get; }
 
     public ReactiveCommand<Unit, Unit> SendImageFileCommand { get; }
-
-    public ReactiveCommand<Unit, Unit> SaveImageFileCommand { get; }
     #endregion
 
     #region Constructors
@@ -85,38 +93,64 @@ public class NeuralAPIViewModel : ReactiveObject, IRoutableViewModel
     {
         HostScreen = screen ?? Locator.Current.GetService<IScreen>();
 
-        _stopToken = new CancellationTokenSource().Token;
+        UrlPath = App.Current.Services.GetRequiredService<Configuration>().GetNeuralApiUrl();
 
         _apiService = App.Current.Services.GetRequiredService<NeuralAPIService>();
         _healthCheckService = App.Current.Services.GetRequiredService<HealthCheckService>();
         _filesService = App.Current.Services.GetRequiredService<IFilesService>();
         _healthCheckService.ApiService = _apiService;
+        _healthCheckService.IsConnected.Subscribe(ConnectionLostActions);
+        _healthCheckService.IsConnected.Subscribe(SetConnectionIndicator);
 
         ConnectionCheckCommand = ReactiveCommand.CreateFromTask(ConnectionCheck);
         OpenImageFileCommand = ReactiveCommand.CreateFromTask(OpenImageFile, _healthCheckService.IsConnected);
         GetUrlCommand = ReactiveCommand.Create(GetUrl);
-        SendImageFileCommand = ReactiveCommand.CreateFromTask(SendFile, _healthCheckService.IsConnected);
+        SendImageFileCommand = ReactiveCommand.CreateFromTask(SendFile, IsFileChosen);
     }
     #endregion
 
     #region Private Methods
     private async Task OpenImageFile()
     {
-        _chosenImageFile = await _filesService.OpenImageFileAsync();
-        ChosenImageFile = new Bitmap(await _chosenImageFile.OpenReadAsync());
+        var file = await _filesService.OpenImageFileAsync();
+        if (file != null)
+        {
+            _imageFile = file;
+            ImageFile = new Bitmap(await _imageFile.OpenReadAsync());
+            IsFileChosen.OnNext(true);
+        }
     }
 
-    private async Task ConnectionCheck() => await _healthCheckService.ExecuteAsync(_stopToken);
+    private async Task ConnectionCheck() => await _healthCheckService.ExecuteAsync(_checkStopTokenSource.Token);
 
     private void GetUrl()
     {
+        _checkStopTokenSource = new CancellationTokenSource();
         _apiService.ApiUrl = UrlPath;
         ConnectionCheckCommand.Execute();
     }
 
     private async Task SendFile()
     {
-        var test = await _apiService.SendAsync(_chosenImageFile.Path);
+        Response = await _apiService.SendAsync(_imageFile.Path);
+        IsFileChosen.OnNext(false);
+    }
+    
+
+    private void ConnectionLostActions(bool isConnected)
+    {
+        if (!isConnected)
+        {
+            IsFileChosen.OnNext(false);
+            IsFileSended.OnNext(false);
+            _checkStopTokenSource?.Cancel();
+        }
+    }
+
+    private void SetConnectionIndicator(bool isConnection)
+    {
+        if (isConnection) ConnectionIndicatorColor = "Green";
+        else ConnectionIndicatorColor = "Red";
     }
     #endregion
 }

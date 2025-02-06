@@ -1,4 +1,6 @@
-﻿namespace APIClient;
+﻿using System.Net.Http.Json;
+
+namespace APIClient;
 
 public class NeuralAPIService : IAPIService
 {
@@ -22,12 +24,13 @@ public class NeuralAPIService : IAPIService
         catch { return null; }
     }
 
-    public async Task<HttpResponseMessage> SendAsync(Uri uri)
+    public async Task<NeuralAPIResponse> SendAsync(Uri uri)
     {
         var multipartFormContent = new MultipartFormDataContent();
         var fileStreamContent = new StreamContent(File.OpenRead(uri.LocalPath));
-        multipartFormContent.Add(fileStreamContent);
-        return await HttpClient.PostAsync($"{ApiUrl}/resize_image", multipartFormContent);
+        multipartFormContent.Add(fileStreamContent, "image", "image.png");
+        var response = await HttpClient.PostAsync($"{ApiUrl}/resize_image", multipartFormContent);
+        return await response.Content.ReadFromJsonAsync<NeuralAPIResponse>();
     }
     #endregion
 }

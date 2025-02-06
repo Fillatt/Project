@@ -8,6 +8,6 @@ public partial class NeuralAPIPage : ReactiveUserControl<NeuralAPIViewModel>
 {
     public NeuralAPIPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

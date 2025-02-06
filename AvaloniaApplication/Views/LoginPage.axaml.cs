@@ -8,6 +8,6 @@ public partial class LoginPage : ReactiveUserControl<LoginViewModel>
 {
     public LoginPage()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

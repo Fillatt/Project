@@ -14,6 +14,13 @@
 							Content="Enter" 
 							Command="{Binding GetUrlCommand}"/>
 				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Connection"/>
+					<Ellipse Fill="{Binding ConnectionIndicatorColor}"
+							 Width="10"
+							 Height="10"
+							 Margin="5 0 0 0"/>
+				</StackPanel>
 			</StackPanel>
 			<StackPanel Margin="0 5 0 0">
 				<Button Content="Select an image" 
@@ -21,38 +28,38 @@
 				<Button Content="Send the image"
 						Command="{Binding SendImageFileCommand}"
 						Margin="0 5 0 0"/>
-				<Button Content="Save the received image"
-						Command="{Binding SaveImageFileCommand}"
-						Margin="0 5 0 0"/>
 			</StackPanel>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal"
 					Margin="20 0 0 0">
-			<StackPanel Margin="0 0 10 0">
+			<StackPanel Margin="0 0 20 0">
 				<TextBlock Text="Preview of the selected image:"/>
-				<Border BorderBrush="Black" 
-						BorderThickness="1"
-						MinWidth="250"
-						MinHeight="150"
-						MaxHeight="325"
-						MaxWidth="325">
-					<Image Source="{Binding ChosenImageFile}" 
-						   MaxWidth="325"
+				<Border Background="Gainsboro"
+						Width="450"
+						Height="300"
+						CornerRadius="5">
+					<Image Source="{Binding ImageFile}" 
+						   MaxWidth="450"
+						   MaxHeight="350"
 						   RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Border>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="Preview of the received image:"/>
-				<Border BorderBrush="Black"
-						BorderThickness="1"
-						MinWidth="250"
-						MinHeight="150"
-						MaxHeight="325"
-						MaxWidth="325">
-					<Image Source="{Binding ReceivedImageFile}"
-						   MaxWidth="325"
-						   RenderOptions.BitmapInterpolationMode="HighQuality"/>
-				</Border>
+				<TextBlock Text="Server response:"/>
+				<StackPanel Margin="0 5 0 0">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Width: "/>
+						<TextBlock Text="{Binding Response.Width}"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Height: "/>
+						<TextBlock Text="{Binding Response.Height}"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Channels: "/>
+						<TextBlock Text="{Binding Response.Channels}"/>
+					</StackPanel>
+				</StackPanel>		
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>

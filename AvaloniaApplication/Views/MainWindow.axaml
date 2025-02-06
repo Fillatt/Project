@@ -9,7 +9,8 @@
 		x:DataType="vm:MainWindowViewModel"
 		WindowStartupLocation="CenterScreen"
         Icon="/Assets/avalonia-logo.ico"
-        Title="AvaloniaApplication">
+        Title="AvaloniaApplication"
+		CanResize="False">
 	<StackPanel Orientation="Vertical">		
 		<DockPanel VerticalAlignment="Top">
 			<Button Content="Authentication" Command="{Binding AuthenticationCommand}"/>

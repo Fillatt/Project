@@ -7,7 +7,7 @@ namespace AvaloniaApplication.Views
     {
         public MainWindow()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();
         }
     }
 }
