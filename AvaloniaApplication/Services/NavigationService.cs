@@ -3,7 +3,7 @@ using ReactiveUI;
 using Splat;
 using System;
 
-namespace AvaloniaApplication;
+namespace AvaloniaApplication.Services;
 
 public class NavigationService
 {
@@ -30,10 +30,17 @@ public class NavigationService
         Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("Register"));
 
     /// <summary>
-    /// Навигация к окну с интерфейсом API 
+    /// Навигация к окну с интерфейсом joke API 
     /// </summary>
     /// <returns></returns>
-    public IObservable<IRoutableViewModel> NavigateApi() =>
-        Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("API"));
+    public IObservable<IRoutableViewModel> NavigateJokeApi() =>
+        Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("JokeAPI"));
+
+    /// <summary>
+    /// Навигация к окну с интерфейсом neural API
+    /// </summary>
+    /// <returns></returns>
+    public IObservable<IRoutableViewModel> NavigateNeuralApi() =>
+        Locator.Current.GetService<IScreen>().Router.Navigate.Execute(Locator.Current.GetService<IRoutableViewModel>("NeuralAPI"));
     #endregion
 }

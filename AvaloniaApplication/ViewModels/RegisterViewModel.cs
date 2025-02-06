@@ -1,4 +1,5 @@
-﻿using DataBase;
+﻿using AvaloniaApplication.Services;
+using DataBase;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
@@ -18,6 +19,12 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     private string _loginError;
 
     private string _passwordError;
+
+    private NavigationService _navigationService;
+
+    private AuthorizationService _authorizationService;
+
+    private ValidationService _validationService;
     #endregion
 
     #region Public Properties
@@ -88,6 +95,11 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     public RegisterViewModel(IScreen screen = null)
     {
         HostScreen = screen ?? Locator.Current.GetService<IScreen>();
+
+        _navigationService = App.Current.Services.GetRequiredService<NavigationService>();
+        _authorizationService = App.Current.Services.GetRequiredService<AuthorizationService>();
+        _validationService = App.Current.Services.GetRequiredService<ValidationService>();
+
         StartRegisterCommand = ReactiveCommand.CreateFromTask(StartRegisterAsync);
         AuthenticationCommand = ReactiveCommand.Create(NavigateAuthentication);
     }
@@ -121,7 +133,7 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.GetValidation: Start");
 
         CleanErrorMessages();
-        var validation = Validation.GetValidation(new Account { Login = Login, Password = Password });
+        var validation = _validationService.GetValidation(new Account { Login = Login, Password = Password });
         LoginError = validation.LoginError;
         PasswordError = validation.PasswordError;
 
@@ -166,8 +178,7 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var authorizationService = Services.Provider.GetRequiredService<Authorization>();
-        var result = await authorizationService.RegisterAsync(new Account { Login = Login, Password = Password });
+        var result = await _authorizationService.RegisterAsync(new Account { Login = Login, Password = Password });
         if (result.IsSuccess) NavigateAuthentication();
         else
         {
@@ -184,6 +195,6 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     /// Навигация к окну аутентификации
     /// </summary>
     /// <returns></returns>
-    public void NavigateAuthentication() => Services.Provider.GetRequiredService<NavigationService>().NavigateAuthentication();
+    public void NavigateAuthentication() => _navigationService.NavigateAuthentication();
     #endregion
 }

@@ -14,7 +14,8 @@
 		<DockPanel VerticalAlignment="Top">
 			<Button Content="Authentication" Command="{Binding AuthenticationCommand}"/>
 			<Button Content="Main" Command="{Binding MainCommand}"/>
-			<Button Content="API" Command="{Binding ApiCommand}"/>
+			<Button Content="Joke API" Command="{Binding JokeAPICommand}"/>
+			<Button Content="Neural API" Command="{Binding NeuralAPICommand}"/>
 		</DockPanel>
 		<DockPanel VerticalAlignment="Center" Height="500">
 			<rxui:RoutedViewHost Router="{Binding Router}">

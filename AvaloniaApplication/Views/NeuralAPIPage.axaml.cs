@@ -1,14 +1,12 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using AvaloniaApplication.ViewModels;
 
 namespace AvaloniaApplication.Views;
 
-public partial class APIPage : ReactiveUserControl<APIViewModel>
+public partial class NeuralAPIPage : ReactiveUserControl<NeuralAPIViewModel>
 {
-    public APIPage()
+    public NeuralAPIPage()
     {
         AvaloniaXamlLoader.Load(this);
     }

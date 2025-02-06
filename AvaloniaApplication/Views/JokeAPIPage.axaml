@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaApplication.Views.JokeAPIPage"
+			 xmlns:vm="using:AvaloniaApplication.ViewModels"
+			 x:DataType="vm:JokeAPIViewModel">
+	<DockPanel Margin="20">
+		<StackPanel HorizontalAlignment="Center">
+			<Border Height="400" Width="600">
+				<ScrollViewer>
+					<ItemsControl ItemsSource="{Binding Jokes}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="Id: "/>
+										<TextBlock Text="{Binding Id}"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="Type: "/>
+										<TextBlock Text="{Binding Type}"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="Setup: "/>
+										<TextBlock Text="{Binding Setup}"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="Punchline: "/>
+										<TextBlock Text="{Binding Punchline}"/>
+									</StackPanel>
+								</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Border>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+			<Button Command="{Binding RandomJokeCommand}" Content="Get a random joke"/>
+			<Button Command="{Binding TenRandomJokesCommand}" Content="Get 10 random jokes"/>
+		</StackPanel>
+	</DockPanel>
+</UserControl>

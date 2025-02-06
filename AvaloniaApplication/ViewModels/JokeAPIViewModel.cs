@@ -1,17 +1,17 @@
-﻿using ReactiveUI;
+﻿using APIClient;
+using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using Splat;
 using System.Collections.Generic;
-using APIClient;
 using System.Reactive;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AvaloniaApplication.ViewModels
 {
-    public class APIViewModel : ReactiveObject, IRoutableViewModel
+    public class JokeAPIViewModel : ReactiveObject, IRoutableViewModel
     {
-        #region
-        APIService _apiService;
+        #region Private Fields
+        JokeAPIService _apiService;
         List<Joke> _jokes;
         #endregion
 
@@ -40,16 +40,16 @@ namespace AvaloniaApplication.ViewModels
         #endregion
 
         #region Constructors
-        public APIViewModel(IScreen screen = null)
+        public JokeAPIViewModel(IScreen screen = null)
         {
             HostScreen = screen ?? Locator.Current.GetService<IScreen>();
-            _apiService = Services.Provider.GetRequiredService<APIService>();
+            _apiService = App.Current.Services.GetRequiredService<JokeAPIService>();
             RandomJokeCommand = ReactiveCommand.CreateFromTask(GetRandomJoke);
             TenRandomJokesCommand = ReactiveCommand.CreateFromTask(Get10RandomJokes);
         }
         #endregion
 
-        #region
+        #region Private Methods
         private async Task GetRandomJoke()
         {
             var joke = await _apiService.GetRandomJoke();
@@ -57,7 +57,7 @@ namespace AvaloniaApplication.ViewModels
         }
 
         private async Task Get10RandomJokes() => Jokes = await _apiService.GetRandom10Jokes();
-        
+
         #endregion
     }
 }

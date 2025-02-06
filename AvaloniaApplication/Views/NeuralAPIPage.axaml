@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AvaloniaApplication.Views.NeuralAPIPage"
+			 xmlns:vm="using:AvaloniaApplication.ViewModels"
+			 x:DataType="vm:NeuralAPIViewModel">
+	<StackPanel Margin="20" Orientation="Horizontal">
+		<StackPanel>
+			<StackPanel Orientation="Vertical">
+				<TextBlock Text="URL:"/>
+				<StackPanel Orientation="Horizontal">
+					<TextBox Width="200" 
+							 Text="{Binding UrlPath}"/>
+					<Button Margin="5 0 0 0" 
+							Content="Enter" 
+							Command="{Binding GetUrlCommand}"/>
+				</StackPanel>
+			</StackPanel>
+			<StackPanel Margin="0 5 0 0">
+				<Button Content="Select an image" 
+						Command="{Binding OpenImageFileCommand}"/>
+				<Button Content="Send the image"
+						Command="{Binding SendImageFileCommand}"
+						Margin="0 5 0 0"/>
+				<Button Content="Save the received image"
+						Command="{Binding SaveImageFileCommand}"
+						Margin="0 5 0 0"/>
+			</StackPanel>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal"
+					Margin="20 0 0 0">
+			<StackPanel Margin="0 0 10 0">
+				<TextBlock Text="Preview of the selected image:"/>
+				<Border BorderBrush="Black" 
+						BorderThickness="1"
+						MinWidth="250"
+						MinHeight="150"
+						MaxHeight="325"
+						MaxWidth="325">
+					<Image Source="{Binding ChosenImageFile}" 
+						   MaxWidth="325"
+						   RenderOptions.BitmapInterpolationMode="HighQuality"/>
+				</Border>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Preview of the received image:"/>
+				<Border BorderBrush="Black"
+						BorderThickness="1"
+						MinWidth="250"
+						MinHeight="150"
+						MaxHeight="325"
+						MaxWidth="325">
+					<Image Source="{Binding ReceivedImageFile}"
+						   MaxWidth="325"
+						   RenderOptions.BitmapInterpolationMode="HighQuality"/>
+				</Border>
+			</StackPanel>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

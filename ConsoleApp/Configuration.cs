@@ -33,11 +33,9 @@ public partial class Configuration
 
     public int GetSleep() => Convert.ToInt32(ReadFromConfiguration("Sleep"));
 
-    public string GetAccountConnectionString() => ReadFromConfiguration("AccountConnection");
-
-    public string GetApiRequestResultConnectionString() => ReadFromConfiguration("ApiRequestResultConnection");
+    public string GetConnectionString() => ReadFromConfiguration("ConnectionString");
    
-    public string GetApiUrl() => ReadFromConfiguration("ApiUrl");
+    public string GetJokeApiUrl() => ReadFromConfiguration("JokeAPIUrl");
     #endregion
 
     #region Private Methods
@@ -72,23 +70,21 @@ public partial class Configuration
         int l = 11;
         int sleep = 3000;
 
-        string accountConnection = @"Server=(localdb)\mssqllocaldb;Database=Accounts;Trusted_Connection=True;";
-        string apiRequestResultConnection = @"Server=(localdb)\mssqllocaldb;Database=ApiRequestsResults;Trusted_Connection=True;";
+        string connectionString = @"Server=(localdb)\mssqllocaldb;Database=DataBase;Trusted_Connection=True;";
        
-        string apiUrl = "https://official-joke-api.appspot.com";
+        string jokeApiUrl = "https://official-joke-api.appspot.com";
 
-        ConfigVariables values = new(n, l, sleep, accountConnection, apiRequestResultConnection, apiUrl);
+        ConfigVariables values = new(n, l, sleep, connectionString, jokeApiUrl);
         File.WriteAllText(FilePath, JsonSerializer.Serialize(values));
         Log.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; " +
             "N: {N}; L: {L}; sleep: {Sleep}; " +
-            "AccountConnection: {AccountConnection}; " +
-            "ApiRequestResultConnection: {ApiRequestResultConnection}; " +
-            "ApiUrl: {ApiUrl}", FilePath, values.N, values.L, values.Sleep, values.AccountConnection, values.ApiRequestResultConnection, values.ApiUrl);
+            "ConnectionString: {AccountConnection}; " +
+            "JokeAPIUrl: {JokeAPIUrl}", FilePath, values.N, values.L, values.Sleep, values.ConnectionString, values.JokeAPIUrl);
     }
     #endregion
 
     #region Records
-    public record ConfigVariables(int N, int L, int Sleep, string AccountConnection, string ApiRequestResultConnection, string ApiUrl);
+    public record ConfigVariables(int N, int L, int Sleep, string ConnectionString, string JokeAPIUrl);
 
     #endregion
 }

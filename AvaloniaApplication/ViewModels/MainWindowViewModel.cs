@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AvaloniaApplication.Services;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System.Reactive;
 
@@ -27,19 +28,25 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     public ReactiveCommand<Unit, IRoutableViewModel> MainCommand { get; }
 
     /// <summary>
-    /// Навигация к окну API
+    /// Навигация к окну Joke API
     /// </summary>
-    public ReactiveCommand<Unit, IRoutableViewModel> ApiCommand { get; }
+    public ReactiveCommand<Unit, IRoutableViewModel> JokeAPICommand { get; }
+
+    /// <summary>
+    /// Навигация к окну Neural API
+    /// </summary>
+    public ReactiveCommand<Unit, IRoutableViewModel> NeuralAPICommand { get; }
     #endregion
 
     #region Constructors
     public MainWindowViewModel()
     {
-        _navigationService = Services.Provider.GetRequiredService<NavigationService>();
+        _navigationService = App.Current.Services.GetRequiredService<NavigationService>();
 
         AuthenticationCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateAuthentication);
         MainCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateMain, LoginViewModel.IsAuthenticated);
-        ApiCommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateApi, LoginViewModel.IsAuthenticated);
+        JokeAPICommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateJokeApi, LoginViewModel.IsAuthenticated);
+        NeuralAPICommand = ReactiveCommand.CreateFromObservable(_navigationService.NavigateNeuralApi, LoginViewModel.IsAuthenticated);
     }
     #endregion
 }

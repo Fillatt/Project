@@ -1,23 +1,27 @@
-﻿using System.Net.Http.Json;
-using Serilog;
+﻿using ConsoleApp;
 using DataBase;
-using ConsoleApp;
+using Serilog;
+using System.Net.Http.Json;
 
 namespace APIClient;
 
-public class APIService
+public class JokeAPIService : IAPIService
 {
     #region Private Fields
-    private string _apiUrl;
     private DbService _dbService;
-    private HttpClient _httpClient;
+    #endregion
+
+    #region Properties
+    public string ApiUrl { get; set; }
+
+    public HttpClient HttpClient { get; set; }
     #endregion
 
     #region Constructors
-    public APIService(Configuration cofiguration, DbService dbService)
+    public JokeAPIService(Configuration cofiguration, DbService dbService)
     {
-        _apiUrl = cofiguration.GetApiUrl();
-        _httpClient = new HttpClient();
+        ApiUrl = cofiguration.GetJokeApiUrl();
+        HttpClient = new HttpClient();
         _dbService = dbService;
     }
     #endregion
@@ -27,7 +31,7 @@ public class APIService
     {
         Log.Debug("APIService.GetRandomJoke: Start");
 
-        var response = await _httpClient.GetAsync($"{_apiUrl}/jokes/random");
+        var response = await HttpClient.GetAsync($"{ApiUrl}/jokes/random");
         Joke joke = await response.Content.ReadFromJsonAsync<Joke>();
 
         await _dbService.Add(new ApiRequestResult
@@ -48,7 +52,7 @@ public class APIService
     {
         Log.Debug("APIService.GetRandom10Jokes: Start");
 
-        var response = await _httpClient.GetAsync($"{_apiUrl}/jokes/ten");
+        var response = await HttpClient.GetAsync($"{ApiUrl}/jokes/ten");
         var jokes = await response.Content.ReadFromJsonAsync<List<Joke>>();
 
         foreach (Joke joke in jokes)

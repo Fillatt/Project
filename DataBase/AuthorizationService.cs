@@ -1,18 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Serilog;
+﻿using Serilog;
 
 namespace DataBase;
 
-public class Authorization
+public class AuthorizationService
 {
     #region Records
     /// <summary>
     /// Запись для получения результата авторизации
     /// </summary>
     public record AuthorizationResult
-    {       
-        public string Message { get; set; }              
-      
+    {
+        public string Message { get; set; }
+
         public bool IsSuccess { get; set; }
     }
     #endregion
@@ -22,7 +21,7 @@ public class Authorization
     #endregion
 
     #region Constructors
-    public Authorization(DbService dbService)
+    public AuthorizationService(DbService dbService)
     {
         _dbService = dbService;
     }
@@ -86,7 +85,7 @@ public class Authorization
 
         var result = new AuthorizationResult
         {
-            Message = message,            
+            Message = message,
             IsSuccess = isSuccess
         };
 
