@@ -30,9 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\APIClient\APIClient.csproj" />
-    <ProjectReference Include="..\ConsoleApp\ConsoleApp.csproj" />
     <ProjectReference Include="..\DataBase\DataBase.csproj" />
-    <ProjectReference Include="..\Figure\Figure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

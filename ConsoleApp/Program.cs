@@ -3,7 +3,7 @@ using Figure;
 using Serilog;
 using Serilog.Events;
 
-Configuration configuration = new("appsettings.json");
+ConfigurationService configuration = new("appsettings.json");
 
 int N = configuration.GetN();
 int L = configuration.GetL();

@@ -4,7 +4,7 @@ using System.Text;
 namespace Figure;
 
 public class Rectangle : AbstractFigure
-{    
+{
     public Rectangle(double speed) : base(speed) { }
 
     public override string Type => "Rectangle";
@@ -19,7 +19,7 @@ public class Rectangle : AbstractFigure
         Message = sb.ToString();
         Log.Debug("Rectangle.StartTheMission: Done");
     }
-    public override void StopTheMission() 
+    public override void StopTheMission()
     {
         Log.Debug("Rectangle.StopTheMission: Start");
         StringBuilder sb = new();

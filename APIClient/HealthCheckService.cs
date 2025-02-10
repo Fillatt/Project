@@ -1,4 +1,5 @@
-﻿using System.Reactive.Subjects;
+﻿using Serilog;
+using System.Reactive.Subjects;
 namespace APIClient;
 
 public class HealthCheckService
@@ -17,16 +18,24 @@ public class HealthCheckService
     #endregion
 
     #region Public Methods
-    public async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task ExecuteAsync(CancellationToken stopToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        Log.Debug("HealthCheckService.ExecuteAsync: Start");
+        while (!stopToken.IsCancellationRequested)
         {
             var response = await ApiService.HealthRequestAsync();
             if (response?.ReasonPhrase == "OK") IsConnected.OnNext(true);
-            else IsConnected.OnNext(false);
+            else
+            {
+                IsConnected.OnNext(false);
+                Log.Warning("HealthCheckService.ExecuteAsync: Сonnection lost");
+            }
 
-            await Task.Delay(5000, stoppingToken);
+            Log.Debug("HealthCheckService.ExecuteAsync: Response: {Response}", response);
+
+            await Task.Delay(5000, stopToken);
         }
+        Log.Debug("HealthCheckService.ExecuteAsync: Done");
     }
     #endregion
 }

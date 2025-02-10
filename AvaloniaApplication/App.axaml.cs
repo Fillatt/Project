@@ -27,6 +27,9 @@ namespace AvaloniaApplication
 
         public override void Initialize()
         {
+#if DEBUG
+            this.AttachDevTools();
+#endif
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -42,7 +45,7 @@ namespace AvaloniaApplication
                   .WriteTo.Logger(l => l.Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Error).WriteTo.File(@"Logs\Error.log"))
                   .CreateLogger();
 
-                Configuration configuration = new("appsettings.json");
+                ConfigurationService configuration = new("appsettings.json");
 
                 Services = new ServiceCollection()
                     .AddSingleton(configuration)
@@ -59,17 +62,18 @@ namespace AvaloniaApplication
                     .BuildServiceProvider();
 
                 Locator.CurrentMutable.RegisterConstant<IScreen>(new MainWindowViewModel());
-                Locator.CurrentMutable.Register(() => new LoginViewModel(), typeof(IRoutableViewModel), contract: "Login");
-                Locator.CurrentMutable.Register(() => new RegisterViewModel(), typeof(IRoutableViewModel), contract: "Register");
-                Locator.CurrentMutable.Register(() => new MainViewModel(), typeof(IRoutableViewModel), contract: "Main");
-                Locator.CurrentMutable.Register(() => new JokeAPIViewModel(), typeof(IRoutableViewModel), contract: "JokeAPI");
-                Locator.CurrentMutable.Register(() => new NeuralAPIViewModel(), typeof(IRoutableViewModel), contract: "NeuralAPI");
 
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = Locator.Current.GetService<IScreen>()
                 };
+
+                Locator.CurrentMutable.RegisterConstant<IRoutableViewModel>(new LoginViewModel(), contract: "Login");
+                Locator.CurrentMutable.Register<IRoutableViewModel>(() => new RegisterViewModel(), contract: "Register");
+                Locator.CurrentMutable.RegisterConstant<IRoutableViewModel>(new MainViewModel(), contract: "Main");
+                Locator.CurrentMutable.RegisterConstant<IRoutableViewModel>(new JokeAPIViewModel(), contract: "JokeAPI");
+                Locator.CurrentMutable.RegisterConstant<IRoutableViewModel>(new NeuralAPIViewModel(), contract: "NeuralAPI");
 
                 Log.Logger = Services.GetRequiredService<Serilog.ILogger>();
 

@@ -1,6 +1,4 @@
-﻿using Serilog.Core;
-
-namespace Figure;
+﻿namespace Figure;
 
 /// <summary>
 /// Абстрактный класс, представляющий фигуру

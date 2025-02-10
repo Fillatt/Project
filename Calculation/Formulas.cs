@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace ConsoleApp;
+namespace Calculation;
 
 /// <summary>
 /// Статический класс для вычисления по формулам

@@ -1,6 +1,7 @@
 ﻿using APIClient;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using Serilog;
 using Splat;
 using System.Collections.Generic;
 using System.Reactive;
@@ -52,12 +53,20 @@ namespace AvaloniaApplication.ViewModels
         #region Private Methods
         private async Task GetRandomJoke()
         {
+            Log.Debug("JokeAPIViewModel.GetRandomJoke: Start");
             var joke = await _apiService.GetRandomJoke();
             Jokes = [joke];
+            Log.Debug("JokeAPIViewModel.GetRandomJoke: Done; Jokes: {Jokes}", Jokes);
+            Log.Information("JokeAPI: Received a random joke");
         }
 
-        private async Task Get10RandomJokes() => Jokes = await _apiService.GetRandom10Jokes();
-
+        private async Task Get10RandomJokes()
+        {
+            Log.Debug("JokeAPIViewModel.Get10RandomJokes: Start");
+            Jokes = await _apiService.GetRandom10Jokes();
+            Log.Debug("JokeAPIViewModel.Get10RandomJokes: Done; Jokes: {Jokes}", Jokes);
+            Log.Information("JokeAPI: Received 10 random jokes");
+        }
         #endregion
     }
 }

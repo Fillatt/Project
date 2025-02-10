@@ -7,7 +7,7 @@ namespace Figure;
 /// Класс, представляющий круг
 /// </summary>
 public class Circle : AbstractFigure
-{    
+{
     public Circle(double speed) : base(speed)
     {
         Color = Color.Bright;
@@ -27,7 +27,7 @@ public class Circle : AbstractFigure
         Log.Debug("Circle.StartTheMission: Done");
     }
 
-    public override void StopTheMission() 
+    public override void StopTheMission()
     {
         Log.Debug("Circle.StopTheMission: Start");
         StopClearTheWay();

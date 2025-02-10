@@ -1,16 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Core;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
-using System.Text.Json.Serialization;
 
 namespace ConsoleApp;
 
 /// <summary>
 /// Класс для взаимодействия с конфигурационным файлом
 /// </summary>
-public partial class Configuration
+public partial class ConfigurationService
 {
     #region Properties
     /// <summary>
@@ -20,7 +17,7 @@ public partial class Configuration
     #endregion
 
     #region Constructors
-    public Configuration(string filePath)
+    public ConfigurationService(string filePath)
     {
         FilePath = filePath;
     }
@@ -28,13 +25,13 @@ public partial class Configuration
 
     #region Public Methods
     public int GetN() => Convert.ToInt32(ReadFromConfiguration("N"));
-   
+
     public int GetL() => Convert.ToInt32(ReadFromConfiguration("L"));
 
     public int GetSleep() => Convert.ToInt32(ReadFromConfiguration("Sleep"));
 
     public string GetConnectionString() => ReadFromConfiguration("ConnectionString");
-   
+
     public string GetJokeApiUrl() => ReadFromConfiguration("JokeAPIUrl");
 
     public string GetNeuralApiUrl() => ReadFromConfiguration("NeuralAPIUrl");
@@ -81,7 +78,7 @@ public partial class Configuration
             "N: {N}; L: {L}; sleep: {Sleep}; " +
             "ConnectionString: {AccountConnection}; " +
             "JokeAPIUrl: {JokeAPIUrl}" +
-            "NeuralApiUrl: {NeuralApiUrl}", 
+            "NeuralApiUrl: {NeuralApiUrl}",
             FilePath, values.N, values.L, values.Sleep, values.ConnectionString, values.JokeAPIUrl, values.NeuralApiUrl);
     }
     #endregion

@@ -18,7 +18,7 @@ public class JokeAPIService : IAPIService
     #endregion
 
     #region Constructors
-    public JokeAPIService(Configuration cofiguration, DbService dbService)
+    public JokeAPIService(ConfigurationService cofiguration, DbService dbService)
     {
         ApiUrl = cofiguration.GetJokeApiUrl();
         HttpClient = new HttpClient();
@@ -43,7 +43,6 @@ public class JokeAPIService : IAPIService
         });
 
         Log.Debug("APIService.GetRandomJoke: Done; Result: {Joke}", joke);
-        Log.Information("Got a joke from API: {Joke}", joke);
 
         return joke;
     }
@@ -67,7 +66,6 @@ public class JokeAPIService : IAPIService
         }
 
         Log.Debug("APIService.GetRandom10Jokes: Done; Result: {Joke}", jokes);
-        Log.Information("Got a 10 jokes from API: {Joke}", jokes);
 
         return jokes;
     }

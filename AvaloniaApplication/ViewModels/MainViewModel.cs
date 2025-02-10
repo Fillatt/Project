@@ -111,7 +111,7 @@ public class MainViewModel : ReactiveObject, IRoutableViewModel
     private async Task StartAsync()
     {
         Log.Debug("MainViewModel.StartAsync: Start");
-        Log.Information("Program: Start");
+        Log.Information("Main Program: Start");
 
         ClearTheOutput();
         _isStart.OnNext(true);
@@ -125,7 +125,7 @@ public class MainViewModel : ReactiveObject, IRoutableViewModel
         _isStart.OnNext(false);
 
         Log.Debug("MainViewModel.StartAsync: Done");
-        Log.Information("Program: End");
+        Log.Information("Main Program: End");
     }
 
     /// <summary>
@@ -138,7 +138,7 @@ public class MainViewModel : ReactiveObject, IRoutableViewModel
         CancelTheToken();
 
         Log.Debug("MainViewModel.Stop: Done");
-        Log.Information("Program: Is stopped");
+        Log.Information("Main Program: Is stopped");
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace AvaloniaApplication.Services;
@@ -19,6 +20,7 @@ public class FilesService : IFilesService
 
     public async Task<IStorageFile?> OpenImageFileAsync()
     {
+        Log.Debug("FilesService.OpenImageFileAsync: Start");
         var files = await _target.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
         {
             Title = "Open Image File",
@@ -26,6 +28,7 @@ public class FilesService : IFilesService
             AllowMultiple = false
         });
 
+        Log.Debug("FilesService.OpenImageFileAsync: Done; Files: {Files}", files);
         return files.Count >= 1 ? files[0] : null;
     }
 }

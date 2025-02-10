@@ -1,7 +1,7 @@
 ﻿using Figure;
 using Serilog;
 
-namespace ConsoleApp;
+namespace Calculation;
 
 /// <summary>
 /// Статический класс для вычислительных операций
