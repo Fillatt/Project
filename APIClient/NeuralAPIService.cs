@@ -1,6 +1,4 @@
-﻿using Azure;
-using Serilog;
-using System.Net.Http.Headers;
+﻿using Serilog;
 using System.Net.Http.Json;
 
 namespace APIClient;
@@ -24,16 +22,16 @@ public class NeuralAPIService : IAPIService
     public async Task<HttpResponseMessage?> HealthRequestAsync()
     {
         Log.Debug("NeuralAPIService.HealthRequestAsync: Start");
-        try 
+        try
         {
             var response = await HttpClient.GetAsync($"{ApiUrl}/health");
             Log.Debug("NeuralAPIService.HealthRequestAsync: Done; Response: {Response}", response);
-            return response; 
+            return response;
         }
-        catch 
+        catch
         {
             Log.Debug("NeuralAPIService.HealthRequestAsync: Fail");
-            return null; 
+            return null;
         }
     }
 

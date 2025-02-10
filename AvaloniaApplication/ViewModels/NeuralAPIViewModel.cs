@@ -1,5 +1,4 @@
 ﻿using APIClient;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using AvaloniaApplication.Services;
