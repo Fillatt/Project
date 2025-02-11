@@ -34,11 +34,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\LoginPage.axaml.cs">
-      <DependentUpon>LoginPage.axaml</DependentUpon>
+    <Compile Update="Views\JokeAPIView.axaml.cs">
+      <DependentUpon>JokeAPIView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\RegisterPage.axaml.cs">
-      <DependentUpon>RegisterPage.axaml</DependentUpon>
+    <Compile Update="Views\LoginView.axaml.cs">
+      <DependentUpon>LoginView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainView.axaml.cs">
+      <DependentUpon>MainView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\NeuralAPIView.axaml.cs">
+      <DependentUpon>NeuralAPIView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\RegisterView.axaml.cs">
+      <DependentUpon>RegisterView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

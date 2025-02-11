@@ -3,9 +3,9 @@ using AvaloniaApplication.ViewModels;
 
 namespace AvaloniaApplication.Views;
 
-public partial class NeuralAPIPage : ReactiveUserControl<NeuralAPIViewModel>
+public partial class JokeAPIView : ReactiveUserControl<JokeAPIViewModel>
 {
-    public NeuralAPIPage()
+    public JokeAPIView()
     {
         InitializeComponent();
     }

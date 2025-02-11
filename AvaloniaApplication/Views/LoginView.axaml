@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:vm="using:AvaloniaApplication.ViewModels"
-             x:Class="AvaloniaApplication.Views.RegisterPage"
-			 x:DataType="vm:RegisterViewModel">
+             x:Class="AvaloniaApplication.Views.LoginView"
+			 x:DataType="vm:LoginViewModel">
 	<StackPanel VerticalAlignment="Center" Width="400">
 		<StackPanel>
 			<TextBlock Text="{Binding Title}"
@@ -22,11 +22,11 @@
 					   FontSize="12"/>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal">
-			<Button Margin="0 10"
-					Content="Sign Up"
-					Command="{Binding StartRegisterCommand}"/>
-			<Button Content="Go Back"
-					Command="{Binding AuthenticationCommand}"/>
+		<Button Margin="0 10"
+                Content="Login"
+                Command="{Binding StartLoginCommand}"/>
+		<Button Content="New Account"
+				Command="{Binding RegisterCommand}"/>
 		</StackPanel>
 	</StackPanel>
 </UserControl>

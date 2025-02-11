@@ -3,9 +3,9 @@ using AvaloniaApplication.ViewModels;
 
 namespace AvaloniaApplication.Views;
 
-public partial class MainPage : ReactiveUserControl<MainViewModel>
+public partial class MainView : ReactiveUserControl<MainViewModel>
 {
-    public MainPage()
+    public MainView()
     {
         InitializeComponent();
     }

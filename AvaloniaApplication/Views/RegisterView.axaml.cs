@@ -4,9 +4,9 @@ using AvaloniaApplication.ViewModels;
 
 namespace AvaloniaApplication.Views;
 
-public partial class RegisterPage : ReactiveUserControl<RegisterViewModel>
+public partial class RegisterView : ReactiveUserControl<RegisterViewModel>
 {
-    public RegisterPage()
+    public RegisterView()
     {
         AvaloniaXamlLoader.Load(this);
     }

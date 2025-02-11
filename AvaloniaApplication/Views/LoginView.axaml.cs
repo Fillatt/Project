@@ -3,9 +3,9 @@ using AvaloniaApplication.ViewModels;
 
 namespace AvaloniaApplication.Views;
 
-public partial class LoginPage : ReactiveUserControl<LoginViewModel>
+public partial class LoginView : ReactiveUserControl<LoginViewModel>
 {
-    public LoginPage()
+    public LoginView()
     {
         InitializeComponent();
     }
