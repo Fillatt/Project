@@ -2,7 +2,7 @@
 
 namespace DataBase;
 
-public class ValidationService
+public class ValidationService : IValidationService
 {
     #region Records
     /// <summary>

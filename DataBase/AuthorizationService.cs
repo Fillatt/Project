@@ -2,7 +2,7 @@
 
 namespace DataBase;
 
-public class AuthorizationService
+public class AuthorizationService : IAuthorizationService
 {
     #region Records
     /// <summary>
@@ -63,7 +63,7 @@ public class AuthorizationService
 
         var result = new AuthorizationResult();
 
-        if (!(await _dbService.VerifyAccount(account))) result = GetResult("Invalid username or password", false);
+        if (!(await _dbService.VerifyAccountAsync(account))) result = GetResult("Invalid username or password", false);
         else result = GetResult($"Login is success", true);
 
         Log.Debug("Authorization.LoginAsync: Done; Result: {@Result}", result);

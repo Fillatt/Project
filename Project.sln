@@ -24,6 +24,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIClient", "APIClient\APIC
 		{8F63CB76-E92F-49A6-A5A2-A453C6519341} = {8F63CB76-E92F-49A6-A5A2-A453C6519341}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRApp", "SignalRApp\SignalRApp.csproj", "{7B62F138-FF8B-4340-9CB5-73FE4404D845}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8F63CB76-E92F-49A6-A5A2-A453C6519341} = {8F63CB76-E92F-49A6-A5A2-A453C6519341}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +55,10 @@ Global
 		{7CDBD437-ACA8-453E-83FC-7958737A1E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CDBD437-ACA8-453E-83FC-7958737A1E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CDBD437-ACA8-453E-83FC-7958737A1E03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B62F138-FF8B-4340-9CB5-73FE4404D845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B62F138-FF8B-4340-9CB5-73FE4404D845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B62F138-FF8B-4340-9CB5-73FE4404D845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B62F138-FF8B-4340-9CB5-73FE4404D845}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

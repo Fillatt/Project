@@ -1,9 +1,9 @@
 ﻿using AvaloniaApplication.Services;
-using DataBase;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
 using Splat;
+using System;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -23,9 +23,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 
     NavigationService _navigationService;
 
-    AuthorizationService _authorizationService;
-
-    ValidationService _validationService;
+    SignalRClientAuthorizationService _signalRClientService;
     #endregion
 
     #region Properties
@@ -85,10 +83,10 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         HostScreen = screen ?? Locator.Current.GetService<IScreen>();
 
         _navigationService = App.Current.Services.GetRequiredService<NavigationService>();
-        _authorizationService = App.Current.Services.GetRequiredService<AuthorizationService>();
-        _validationService = App.Current.Services.GetRequiredService<ValidationService>();
+        _signalRClientService = App.Current.Services.GetRequiredService<SignalRClientAuthorizationService>();
+        _signalRClientService.IsConnectedSubject.Subscribe(OnConnectionChange);
 
-        StartLoginCommand = ReactiveCommand.CreateFromTask(StartLoginAsync);
+        StartLoginCommand = ReactiveCommand.CreateFromTask(StartLoginAsync, _signalRClientService.IsConnectedSubject);
         RegisterCommand = ReactiveCommand.Create(NavigateRegister);
     }
     #endregion
@@ -104,7 +102,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         Log.Information("Logining: Start");
 
         ClearTitle();
-        bool isValidated = GetValidation();
+        bool isValidated = await GetValidationAsync();
         if (isValidated) await StartAuthorizationAsync();
 
         Log.Information("Logining: End");
@@ -115,12 +113,13 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     /// Начать валидацию
     /// </summary>
     /// <returns></returns>
-    private bool GetValidation()
+    private async Task<bool> GetValidationAsync()
     {
         Log.Debug("LoginViewModel.GetValidation: Start");
 
         CleanErrorMessages();
-        var validation = _validationService.GetValidation(new Account { Login = Login, Password = Password });
+        await _signalRClientService.StartValidationAsync(Login, Password);
+        var validation = _signalRClientService.GetValidationResult();
         LoginError = validation.LoginError;
         PasswordError = validation.PasswordError;
 
@@ -165,7 +164,8 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var result = await _authorizationService.LoginAsync(new Account { Login = Login, Password = Password });
+        await _signalRClientService.StartLoginAsync(Login, Password);
+        var result = _signalRClientService.GetAuthorizationResult();
         if (result.IsSuccess) NavigateMain();
         else
         {
@@ -173,6 +173,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
             TitleColor = "Red";
         }
         if (!IsAuthenticated.Value) IsAuthenticated.OnNext(result.IsSuccess);
+
         Log.Debug("LoginViewModel.StartAuthorizationAsync: Done; Is success: {IsSuccess}", result.IsSuccess);
         if (!result.IsSuccess) Log.Warning("LoginViewModel.StartAuthorizationAsync: Authorization is fail; Message: {Message}", result.Message);
         Log.Information("Authorization: End");
@@ -187,6 +188,18 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     /// <summary>
     /// Переход к окну регистрации
     /// </summary>
-    public void NavigateRegister() => _navigationService.NavigateRegister();
+    private void NavigateRegister() => _navigationService.NavigateRegister();
+
+    private void OnConnectionChange(bool isConnected)
+    {
+        if (isConnected) ClearTitle();
+        else SetTitleConnectionError();
+    }
+
+    private void SetTitleConnectionError()
+    {
+        Title = "Connection is lost";
+        TitleColor = "Red";
+    }
     #endregion
 }

@@ -1,18 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:vm="using:AvaloniaApplication.ViewModels"                     
+			 xmlns:vm="using:AvaloniaApplication.ViewModels"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              x:Class="AvaloniaApplication.Views.MainView"
+			 d:DesignWidth="1000" d:DesignHeight="500"
 			 x:DataType="vm:MainViewModel">
 	<DockPanel Margin="20">
-		<StackPanel HorizontalAlignment="Center">
-			<ItemsControl ItemsSource="{Binding Amounts}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>	
-						<TextBlock Text="{Binding Value}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-			<TextBlock Text="{Binding Message}"/>
+		<StackPanel>
+			<StackPanel>
+				<TextBlock Text="{Binding TitleConnectionError}"
+						   Foreground="Red"/>
+			</StackPanel>
+			<StackPanel HorizontalAlignment="Center">
+				<ItemsControl ItemsSource="{Binding Amounts}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>	
+							<TextBlock Text="{Binding Value}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+				<TextBlock Text="{Binding Message}"/>
+			</StackPanel>
 		</StackPanel>
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
 			<Button Command="{Binding StartCommand}" Content="Start"/>

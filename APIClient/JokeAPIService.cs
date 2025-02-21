@@ -1,5 +1,4 @@
 ﻿using ConsoleApp;
-using DataBase;
 using Serilog;
 using System.Net.Http.Json;
 
@@ -7,10 +6,6 @@ namespace APIClient;
 
 public class JokeAPIService : IAPIService
 {
-    #region Private Fields
-    private DbService _dbService;
-    #endregion
-
     #region Properties
     public string ApiUrl { get; set; }
 
@@ -18,11 +13,10 @@ public class JokeAPIService : IAPIService
     #endregion
 
     #region Constructors
-    public JokeAPIService(ConfigurationService cofiguration, DbService dbService)
+    public JokeAPIService(ConfigurationService cofiguration)
     {
         ApiUrl = cofiguration.GetJokeApiUrl();
         HttpClient = new HttpClient();
-        _dbService = dbService;
     }
     #endregion
 
@@ -33,14 +27,6 @@ public class JokeAPIService : IAPIService
 
         var response = await HttpClient.GetAsync($"{ApiUrl}/jokes/random");
         Joke joke = await response.Content.ReadFromJsonAsync<Joke>();
-
-        await _dbService.Add(new ApiRequestResult
-        {
-            Type = joke.Type,
-            Setup = joke.Setup,
-            Punchline = joke.Punchline,
-            JokeId = joke.Id
-        });
 
         Log.Debug("APIService.GetRandomJoke: Done; Result: {Joke}", joke);
 
@@ -53,17 +39,6 @@ public class JokeAPIService : IAPIService
 
         var response = await HttpClient.GetAsync($"{ApiUrl}/jokes/ten");
         var jokes = await response.Content.ReadFromJsonAsync<List<Joke>>();
-
-        foreach (Joke joke in jokes)
-        {
-            await _dbService.Add(new ApiRequestResult
-            {
-                Type = joke.Type,
-                Setup = joke.Setup,
-                Punchline = joke.Punchline,
-                JokeId = joke.Id
-            });
-        }
 
         Log.Debug("APIService.GetRandom10Jokes: Done; Result: {Joke}", jokes);
 

@@ -40,7 +40,7 @@ public class DbService
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public async Task Add(ApiRequestResult requestResult)
+    public async Task AddAsync(ApiRequestResult requestResult)
     {
         await _dbContext.ApiRequests.AddAsync(requestResult);
         await _dbContext.SaveChangesAsync();
@@ -51,7 +51,7 @@ public class DbService
     /// </summary>
     /// <param name="account"></param>
     /// <returns></returns>
-    public async Task<bool> VerifyAccount(Account account)
+    public async Task<bool> VerifyAccountAsync(Account account)
     {
         var accountDb = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Login == account.Login);
         return accountDb != null && PasswordHasher.VerifyPasswordHash(account.Password, accountDb.PasswordHash, accountDb.PasswordSalt);

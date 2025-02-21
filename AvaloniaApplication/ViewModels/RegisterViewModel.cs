@@ -1,9 +1,9 @@
 ﻿using AvaloniaApplication.Services;
-using DataBase;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
 using Splat;
+using System;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -22,9 +22,7 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
 
     private NavigationService _navigationService;
 
-    private AuthorizationService _authorizationService;
-
-    private ValidationService _validationService;
+    private SignalRClientAuthorizationService _signalRClientService;
     #endregion
 
     #region Public Properties
@@ -97,10 +95,10 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         HostScreen = screen ?? Locator.Current.GetService<IScreen>();
 
         _navigationService = App.Current.Services.GetRequiredService<NavigationService>();
-        _authorizationService = App.Current.Services.GetRequiredService<AuthorizationService>();
-        _validationService = App.Current.Services.GetRequiredService<ValidationService>();
+        _signalRClientService = App.Current.Services.GetRequiredService<SignalRClientAuthorizationService>();
+        _signalRClientService.IsConnectedSubject.Subscribe(OnConnectionChange);
 
-        StartRegisterCommand = ReactiveCommand.CreateFromTask(StartRegisterAsync);
+        StartRegisterCommand = ReactiveCommand.CreateFromTask(StartRegisterAsync, _signalRClientService.IsConnectedSubject);
         AuthenticationCommand = ReactiveCommand.Create(NavigateAuthentication);
     }
     #endregion
@@ -117,7 +115,7 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Information("Registration: Start");
 
         ClearTitle();
-        bool isValidated = GetValidation();
+        bool isValidated = await GetValidationAsync();
         if (isValidated) await StartAuthorizationAsync();
 
         Log.Debug("RegisterViewModel.StartRegisterAsync: Done");
@@ -128,12 +126,13 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     /// Начать валидацию
     /// </summary>
     /// <returns></returns>
-    private bool GetValidation()
+    private async Task<bool> GetValidationAsync()
     {
         Log.Debug("RegisterViewModel.GetValidation: Start");
 
         CleanErrorMessages();
-        var validation = _validationService.GetValidation(new Account { Login = Login, Password = Password });
+        await _signalRClientService.StartValidationAsync(Login, Password);
+        var validation = _signalRClientService.GetValidationResult();
         LoginError = validation.LoginError;
         PasswordError = validation.PasswordError;
 
@@ -178,7 +177,9 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
         Log.Debug("RegisterViewModel.StartAuthorizationAsync: Start");
         Log.Information("Authorization: Start");
 
-        var result = await _authorizationService.RegisterAsync(new Account { Login = Login, Password = Password });
+        await _signalRClientService.StartRegisterAsync(Login, Password);
+        var result = _signalRClientService.GetAuthorizationResult();
+
         if (result.IsSuccess) NavigateAuthentication();
         else
         {
@@ -195,6 +196,18 @@ public class RegisterViewModel : ReactiveObject, IRoutableViewModel
     /// Навигация к окну аутентификации
     /// </summary>
     /// <returns></returns>
-    public void NavigateAuthentication() => _navigationService.NavigateAuthentication();
+    private void NavigateAuthentication() => _navigationService.NavigateAuthentication();
+
+    private void OnConnectionChange(bool isConnected)
+    {
+        if (isConnected) ClearTitle();
+        else SetTitleConnectionError();
+    }
+
+    private void SetTitleConnectionError()
+    {
+        Title = "Connection is lost";
+        TitleColor = "Red";
+    }
     #endregion
 }

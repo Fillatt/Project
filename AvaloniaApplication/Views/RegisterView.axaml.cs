@@ -1,4 +1,3 @@
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using AvaloniaApplication.ViewModels;
 
@@ -8,6 +7,6 @@ public partial class RegisterView : ReactiveUserControl<RegisterViewModel>
 {
     public RegisterView()
     {
-        AvaloniaXamlLoader.Load(this);
+        InitializeComponent();
     }
 }

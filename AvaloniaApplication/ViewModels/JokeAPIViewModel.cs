@@ -1,8 +1,10 @@
 ﻿using APIClient;
+using AvaloniaApplication.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Serilog;
 using Splat;
+using System;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -12,8 +14,13 @@ namespace AvaloniaApplication.ViewModels
     public class JokeAPIViewModel : ReactiveObject, IRoutableViewModel
     {
         #region Private Fields
-        JokeAPIService _apiService;
-        List<Joke> _jokes;
+        private JokeAPIService _apiService;
+
+        private List<Joke> _jokes;
+
+        private SignalRClientJokesDbService _signalRClientService;
+
+        private string _titleConnectionError;
         #endregion
 
         #region Properties
@@ -32,6 +39,12 @@ namespace AvaloniaApplication.ViewModels
             get => _jokes;
             set { this.RaiseAndSetIfChanged(ref _jokes, value); }
         }
+
+        public string TitleConnectionError
+        {
+            get => _titleConnectionError;
+            set { this.RaiseAndSetIfChanged(ref _titleConnectionError, value); }
+        }
         #endregion
 
         #region Commands
@@ -45,8 +58,11 @@ namespace AvaloniaApplication.ViewModels
         {
             HostScreen = screen ?? Locator.Current.GetService<IScreen>();
             _apiService = App.Current.Services.GetRequiredService<JokeAPIService>();
-            RandomJokeCommand = ReactiveCommand.CreateFromTask(GetRandomJoke);
-            TenRandomJokesCommand = ReactiveCommand.CreateFromTask(Get10RandomJokes);
+            _signalRClientService = App.Current.Services.GetRequiredService<SignalRClientJokesDbService>();
+
+            _signalRClientService.IsConnectedSubject.Subscribe(OnConnectionChange);
+            RandomJokeCommand = ReactiveCommand.CreateFromTask(GetRandomJoke, _signalRClientService.IsConnectedSubject);
+            TenRandomJokesCommand = ReactiveCommand.CreateFromTask(Get10RandomJokes, _signalRClientService.IsConnectedSubject);
         }
         #endregion
 
@@ -54,8 +70,12 @@ namespace AvaloniaApplication.ViewModels
         private async Task GetRandomJoke()
         {
             Log.Debug("JokeAPIViewModel.GetRandomJoke: Start");
+
             var joke = await _apiService.GetRandomJoke();
             Jokes = [joke];
+
+            await _signalRClientService.AddInDataBaseAsync(joke);
+
             Log.Debug("JokeAPIViewModel.GetRandomJoke: Done; Jokes: {Jokes}", Jokes);
             Log.Information("JokeAPI: Received a random joke");
         }
@@ -63,9 +83,19 @@ namespace AvaloniaApplication.ViewModels
         private async Task Get10RandomJokes()
         {
             Log.Debug("JokeAPIViewModel.Get10RandomJokes: Start");
+
             Jokes = await _apiService.GetRandom10Jokes();
+
+            await _signalRClientService.AddInDataBaseAsync(Jokes);
+
             Log.Debug("JokeAPIViewModel.Get10RandomJokes: Done; Jokes: {Jokes}", Jokes);
             Log.Information("JokeAPI: Received 10 random jokes");
+        }
+
+        private void OnConnectionChange(bool isConnected)
+        {
+            if (isConnected) TitleConnectionError = string.Empty;
+            else TitleConnectionError = "Connection is lost";
         }
         #endregion
     }

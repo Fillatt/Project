@@ -27,9 +27,6 @@ namespace AvaloniaApplication
 
         public override void Initialize()
         {
-#if DEBUG
-            this.AttachDevTools();
-#endif
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -59,6 +56,9 @@ namespace AvaloniaApplication
                     .AddTransient<NeuralAPIService>()
                     .AddTransient<HealthCheckService>()
                     .AddTransient<IFilesService>(x => new FilesService(desktop.MainWindow))
+                    .AddSingleton<SignalRClientAuthorizationService>()
+                    .AddSingleton<SignalRClientModelService>()
+                    .AddSingleton<SignalRClientJokesDbService>()
                     .BuildServiceProvider();
 
                 Locator.CurrentMutable.RegisterConstant<IScreen>(new MainWindowViewModel());

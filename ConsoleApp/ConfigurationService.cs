@@ -35,6 +35,8 @@ public partial class ConfigurationService
     public string GetJokeApiUrl() => ReadFromConfiguration("JokeAPIUrl");
 
     public string GetNeuralApiUrl() => ReadFromConfiguration("NeuralAPIUrl");
+
+    public string GetSignalRAppUrl() => ReadFromConfiguration("SignalRAppUrl");
     #endregion
 
     #region Private Methods
@@ -71,20 +73,29 @@ public partial class ConfigurationService
         string connectionString = @"Server=(localdb)\mssqllocaldb;Database=DataBase;Trusted_Connection=True;";
         string jokeApiUrl = "https://official-joke-api.appspot.com";
         string neuralApiUrl = "http://localhost:8000";
+        string signalRAppUrl = "https://localhost:7278";
 
-        ConfigVariables values = new(n, l, sleep, connectionString, jokeApiUrl, neuralApiUrl);
+        ConfigVariables values = new(n, l, sleep, connectionString, jokeApiUrl, neuralApiUrl, signalRAppUrl);
         File.WriteAllText(FilePath, JsonSerializer.Serialize(values));
         Log.Debug("Configuration.InitConfiguration: Done; File Path: {FilePath}; " +
             "N: {N}; L: {L}; sleep: {Sleep}; " +
             "ConnectionString: {AccountConnection}; " +
             "JokeAPIUrl: {JokeAPIUrl}" +
             "NeuralApiUrl: {NeuralApiUrl}",
-            FilePath, values.N, values.L, values.Sleep, values.ConnectionString, values.JokeAPIUrl, values.NeuralApiUrl);
+            "SignalRAppUrl: {SignalRAppUrl}",
+            FilePath, values.N, values.L, values.Sleep, values.ConnectionString, values.JokeAPIUrl, values.NeuralApiUrl, values.SignalRAppUrl);
     }
     #endregion
 
     #region Records
-    public record ConfigVariables(int N, int L, int Sleep, string ConnectionString, string JokeAPIUrl, string NeuralApiUrl);
+    public record ConfigVariables(
+        int N,
+        int L,
+        int Sleep,
+        string ConnectionString,
+        string JokeAPIUrl,
+        string NeuralApiUrl,
+        string SignalRAppUrl);
 
     #endregion
 }
